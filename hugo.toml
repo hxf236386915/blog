@@ -54,6 +54,18 @@ target = 'css'
 source = 'assets'
 target = 'assets'
 [[module.mounts]]
+source = 'static'
+target = 'static'
+[[module.mounts]]
+source = 'layouts'
+target = 'layouts'
+[[module.mounts]]
+source = 'themes/Hugoplate/layouts'
+target = 'layouts'
+[[module.mounts]]
+source = 'themes/Hugoplate/layouts/_partials'
+target = 'layouts/partials'
+[[module.mounts]]
 disableWatch = true
 source = 'hugo_stats.json'
 target = 'assets/notwatching/hugo_stats.json'
@@ -98,70 +110,3 @@ ordered = true
 
 ########################### Media types ###########################
 [mediaTypes]
-[mediaTypes."application/manifest+json"]
-suffixes = ["webmanifest"]
-
-
-########################### Output Format ##########################
-[outputFormats]
-[outputFormats.WebAppManifest]
-mediaType = "application/manifest+json"
-rel = "manifest"
-
-[outputFormats.SearchIndex]
-mediaType = "application/json"
-baseName = "searchindex"
-isPlainText = true
-notAlternative = true
-
-
-############################# Plugins ##############################
-
-# CSS Plugins
-[[params.plugins.css]]
-link = "plugins/swiper/swiper-bundle.css" # https://github.com/gethugothemes/hugo-modules/tree/master/gallery-slider
-lazy = true
-[[params.plugins.css]]
-link = "plugins/glightbox/glightbox.css" 
-# https://github.com/gethugothemes/hugo-modules/tree/master/gallery-slider
-lazy = true
-[[params.plugins.css]]
-link = "plugins/font-awesome/v6/brands.css" 
-# https://github.com/gethugothemes/hugo-modules/tree/master/icons/font-awesome
-lazy = true
-[[params.plugins.css]]
-link = "plugins/font-awesome/v6/solid.css"
-lazy = true
-[[params.plugins.css]]
-link = "plugins/font-awesome/v6/icons.css"
-lazy = true
-
-# JS Plugins
-[[params.plugins.js]]
-link = "js/search.js" # https://github.com/gethugothemes/hugo-modules/tree/master/search
-lazy = false
-[[params.plugins.js]]
-link = "plugins/swiper/swiper-bundle.js" 
-# https://github.com/gethugothemes/hugo-modules/tree/master/gallery-slider
-lazy = false
-[[params.plugins.js]]
-link = "plugins/glightbox/glightbox.js" # https://github.com/gethugothemes/hugo-modules/tree/master/gallery-slider
-lazy = true
-[[params.plugins.js]]
-link = "js/gallery-slider.js" # https://github.com/gethugothemes/hugo-modules/tree/master/gallery-slider
-lazy = true
-[[params.plugins.js]]
-link = "plugins/cookie.js" # https://github.com/gethugothemes/hugo-modules/tree/master/components/cookie-consent
-lazy = false
-[[params.plugins.js]]
-link = "js/accordion.js" # https://github.com/gethugothemes/hugo-modules/tree/master/accordion
-lazy = true
-[[params.plugins.js]] 
-link = "js/tab.js" # https://github.com/gethugothemes/hugo-modules/tree/master/accordion
-lazy = true
-[[params.plugins.js]]
-link = "js/modal.js" # https://github.com/gethugothemes/hugo-modules/tree/master/modal
-lazy = true
-[[params.plugins.js]]
-link = "plugins/youtube-lite.js" # https://github.com/gethugothemes/hugo-modules/tree/master/videos
-lazy = true
