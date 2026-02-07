@@ -1,9 +1,9 @@
 [hugoVersion]
 extended = true
-min = "0.151.0"
+min = "0.114.0"
 
 [[imports]]
-path = "github.com/zeon-studio/hugoplate"
+# path = "github.com/zeon-studio/hugoplate"
 
 [[imports]]
 path = "github.com/gethugothemes/hugo-modules/search"
