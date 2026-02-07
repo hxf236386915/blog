@@ -7,43 +7,54 @@ url = "/"
 weight = 1
 
 [[main]]
-name = "关于我"
-url = "/about"
+parent = "页面"
+name = "文章"
+url = "/blog"
 weight = 2
 
 [[main]]
-name = "组件展示"
-url = "/elements"
+name = "分类"
+url = "/categories"
 weight = 3
 
 [[main]]
+name = "关于我"
+url = "/about"
 weight = 4
-name = "页面"
 
-[[main]]
-parent = "页面"
-name = "博客文章"
-url = "/blog"
+# [[main]]
+# name = "组件展示"
+# url = "/elements"
+# weight = 3
 
-[[main]]
-parent = "页面"
-name = "联系方式"
-url = "/contact"
+# [[main]]
+# weight = 4
+# name = "页面"
 
-[[main]]
-parent = "页面"
-name = "作者列表"
-url = "/authors"
+# [[main]]
+# parent = "页面"
+# name = "博客文章"
+# url = "/blog"
 
-[[main]]
-parent = "页面"
-name = "分类"
-url = "/categories"
+# [[main]]
+# parent = "页面"
+# name = "联系方式"
+# url = "/contact"
 
-[[main]]
-parent = "页面"
-name = "404 页面"
-url = "/404"
+# [[main]]
+# parent = "页面"
+# name = "作者列表"
+# url = "/authors"
+
+# [[main]]
+# parent = "页面"
+# name = "分类"
+# url = "/categories"
+
+# [[main]]
+# parent = "页面"
+# name = "404 页面"
+# url = "/404"
 
 
 # footer menu
@@ -52,10 +63,10 @@ name = "关于我"
 url = "/about"
 weight = 1
 
-[[footer]]
-name = "组件展示"
-url = "/elements"
-weight = 2
+# [[footer]]
+# name = "组件展示"
+# url = "/elements"
+# weight = 2
 
 [[footer]]
 name = "隐私协议"
