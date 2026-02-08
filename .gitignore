@@ -3,6 +3,9 @@ public
 resources
 .hugo_build.lock
 
+# Binaries
+bin/
+
 # Node
 node_modules
 package-lock.json
