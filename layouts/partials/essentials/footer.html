@@ -24,11 +24,13 @@
       <script>
         function handleNewsletterSubmit(form) {
           const action = form.getAttribute('action');
-          if (action === '#' || action === '') {
+          if (action === '#' || action === '' || action.includes('您的用户名')) {
             event.preventDefault();
-            document.getElementById(form.id + '-error').classList.remove('hidden');
+            const errorDiv = document.getElementById(form.id + '-error');
+            errorDiv.innerText = action.includes('您的用户名') ? '请在 params.toml 中将“您的用户名”替换为您真实的 Buttondown 用户名。' : '请先在 params.toml 中配置正确的订阅地址 (Action URL)。';
+            errorDiv.classList.remove('hidden');
             setTimeout(() => {
-              document.getElementById(form.id + '-error').classList.add('hidden');
+              errorDiv.classList.add('hidden');
             }, 5000);
             return false;
           }
