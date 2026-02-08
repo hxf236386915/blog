@@ -29,6 +29,21 @@ custom_script = ""
 # copyright
 copyright = "@2026 by houxuefeng"
 
+# color_primary for PWA module
+color_primary = "#121212"
+
+# PWA
+[pwa]
+enable = true
+name = "Hugoplate"
+short_name = "Hugoplate"
+theme_color = "#121212"
+background_color = "#ffffff"
+display = "standalone"
+orientation = "any"
+scope = "/"
+start_url = "/"
+
 # Preloader
 # preloader module: https://github.com/gethugothemes/hugo-modules/tree/master/components/preloader
 [preloader]
