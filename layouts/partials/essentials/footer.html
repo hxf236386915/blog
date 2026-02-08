@@ -9,42 +9,70 @@
         <!-- 订阅描述 -->
         <p class="mb-8">{{ site.Params.newsletter.description | markdownify }}</p>
         <!-- 订阅表单，支持 Buttondown 弹出窗口 -->
-        <form id="newsletter-footer" action="{{ site.Params.newsletter.action }}" method="post" target="popupwindow" onsubmit="handleNewsletterSubmit(this)" class="flex flex-col sm:flex-row gap-4 justify-center relative">
+        <form id="newsletter-footer" action="{{ site.Params.newsletter.action }}" method="post" onsubmit="handleNewsletterSubmit(event, this)" class="flex flex-col sm:flex-row gap-4 justify-center relative">
         <input type="email" name="email" class="form-input w-full sm:w-auto min-w-[300px] rounded" placeholder="{{ site.Params.newsletter.placeholder }}" required>
-        <input type="hidden" value="1" name="embed">
-        <button type="submit" class="btn btn-primary">{{ site.Params.newsletter.button_label }}</button>
+        <button type="submit" class="btn btn-primary">
+          <span class="submit-text">{{ site.Params.newsletter.button_label }}</span>
+          <span class="loading-text hidden">提交中...</span>
+        </button>
         <div id="newsletter-footer-success" class="hidden absolute -bottom-8 left-0 right-0 text-green-500 text-sm">
-          订阅请求已发送！请在弹出的窗口中确认订阅。
+          感谢订阅！请检查您的邮箱以确认。
         </div>
         <div id="newsletter-footer-error" class="hidden absolute -bottom-8 left-0 right-0 text-red-500 text-sm">
-          请先在 params.toml 中配置正确的订阅地址 (Action URL)。
+          订阅失败，请稍后重试。
         </div>
       </form>
 
       <script>
-        function handleNewsletterSubmit(form) {
-          const action = form.getAttribute('action');
-          if (action === '#' || action === '' || action.includes('您的用户名')) {
-            event.preventDefault();
-            const errorDiv = document.getElementById(form.id + '-error');
-            errorDiv.innerText = action.includes('您的用户名') ? '请在 params.toml 中将“您的用户名”替换为您真实的 Buttondown 用户名。' : '请先在 params.toml 中配置正确的订阅地址 (Action URL)。';
+        async function handleNewsletterSubmit(event, form) {
+          event.preventDefault();
+          const email = form.querySelector('input[name="email"]').value;
+          const submitBtn = form.querySelector('button[type="submit"]');
+          const submitText = submitBtn.querySelector('.submit-text');
+          const loadingText = submitBtn.querySelector('.loading-text');
+          const successDiv = document.getElementById(form.id + '-success');
+          const errorDiv = document.getElementById(form.id + '-error');
+
+          // 重置状态
+          successDiv.classList.add('hidden');
+          errorDiv.classList.add('hidden');
+          submitBtn.disabled = true;
+          submitText.classList.add('hidden');
+          loadingText.classList.remove('hidden');
+
+          try {
+            const response = await fetch('{{ site.Params.newsletter.action }}', {
+              method: 'POST',
+              headers: {
+                'Authorization': 'Token {{ site.Params.newsletter.api_token }}',
+                'Content-Type': 'application/json'
+              },
+              body: JSON.stringify({
+                email_address: email,
+                tags: ['newsletter']
+              })
+            });
+
+            if (response.ok) {
+              successDiv.classList.remove('hidden');
+              form.reset();
+            } else {
+              const data = await response.json();
+              errorDiv.innerText = data.detail || '订阅失败，请稍后重试。';
+              errorDiv.classList.remove('hidden');
+            }
+          } catch (err) {
             errorDiv.classList.remove('hidden');
+            console.error('Newsletter error:', err);
+          } finally {
+            submitBtn.disabled = false;
+            submitText.classList.remove('hidden');
+            loadingText.classList.add('hidden');
             setTimeout(() => {
+              successDiv.classList.add('hidden');
               errorDiv.classList.add('hidden');
             }, 5000);
-            return false;
           }
-          
-          window.open(action, 'popupwindow', 'scrollbars=yes,width=800,height=600');
-          
-          // 显示成功提示并清空输入框
-          document.getElementById(form.id + '-success').classList.remove('hidden');
-          setTimeout(() => {
-            form.querySelector('input[type="email"]').value = '';
-            document.getElementById(form.id + '-success').classList.add('hidden');
-          }, 5000);
-          
-          return true;
         }
       </script>
       </div>

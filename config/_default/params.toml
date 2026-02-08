@@ -37,7 +37,8 @@ copyright = "@2026 by houxuefeng"
   description = "获取最新的文章更新和技术分享。" # 订阅区域描述文字
   placeholder = "您的邮箱地址" # 输入框提示文字
   button_label = "订阅" # 按钮文字
-  action = "https://buttondown.email/api/emails/embed-subscribe/hxf236386915" # 替换为您的 Buttondown 用户名
+  action = "https://api.buttondown.com/v1/subscribers" # Buttondown API 接口地址
+  api_token = "b7b5d37d-f047-4358-9bd8-223967a6d1f2" # 您的 API Token
 
 # Preloader
 # preloader module: https://github.com/gethugothemes/hugo-modules/tree/master/components/preloader

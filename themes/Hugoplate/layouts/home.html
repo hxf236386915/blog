@@ -131,15 +131,17 @@
         <div class="lg:col-8 text-center">
           <h2 class="h3 mb-4">{{ site.Params.newsletter.title | markdownify }}</h2>
           <p class="mb-8">{{ site.Params.newsletter.description | markdownify }}</p>
-          <form id="newsletter-home" action="{{ site.Params.newsletter.action }}" method="post" target="popupwindow" onsubmit="handleNewsletterSubmit(this)" class="flex flex-col sm:flex-row gap-4 justify-center relative">
+          <form id="newsletter-home" action="{{ site.Params.newsletter.action }}" method="post" onsubmit="handleNewsletterSubmit(event, this)" class="flex flex-col sm:flex-row gap-4 justify-center relative">
             <input type="email" name="email" class="form-input w-full sm:w-auto min-w-[300px] rounded" placeholder="{{ site.Params.newsletter.placeholder }}" required>
-            <input type="hidden" value="1" name="embed">
-            <button type="submit" class="btn btn-primary">{{ site.Params.newsletter.button_label }}</button>
+            <button type="submit" class="btn btn-primary">
+              <span class="submit-text">{{ site.Params.newsletter.button_label }}</span>
+              <span class="loading-text hidden">提交中...</span>
+            </button>
             <div id="newsletter-home-success" class="hidden absolute -bottom-8 left-0 right-0 text-green-500 text-sm">
-              订阅请求已发送！请在弹出的窗口中确认订阅。
+              感谢订阅！请检查您的邮箱以确认。
             </div>
             <div id="newsletter-home-error" class="hidden absolute -bottom-8 left-0 right-0 text-red-500 text-sm">
-              请先在 params.toml 中配置正确的订阅地址 (Action URL)。
+              订阅失败，请稍后重试。
             </div>
           </form>
         </div>
