@@ -1,4 +1,4 @@
-################ zh language ##################
+################ Chinese language ##################
 [zh]
 languageName = "中文"
 languageCode = "zh-cn"
@@ -9,5 +9,5 @@ weight = 1
 [en]
 languageName = "English"
 languageCode = "en-us"
-contentDir = "content/english"
+contentDir = "content/chinese"
 weight = 2
