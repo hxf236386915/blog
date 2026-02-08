@@ -7,43 +7,49 @@ url = "/"
 weight = 1
 
 [[main]]
-name = "About"
-url = "/about"
+name = "blog"
+url = "/blog"
 weight = 2
 
 [[main]]
-name = "Elements"
-url = "/elements"
+name = "categories"
+url = "/categories"
 weight = 3
 
 [[main]]
+name = "about"
+url = "/about"
 weight = 4
-name = "Pages"
 
-[[main]]
-parent = "Pages"
-name = "Blog"
-url = "/blog"
 
-[[main]]
-parent = "Pages"
-name = "Contact"
-url = "/contact"
+# [[main]]
+# weight = 4
+# name = "Pages"
 
-[[main]]
-parent = "Pages"
-name = "Authors"
-url = "/authors"
+# [[main]]
+# parent = "Pages"
+# name = "Blog"
+# url = "/blog"
 
-[[main]]
-parent = "Pages"
-name = "Categories"
-url = "/categories"
+# [[main]]
+# parent = "Pages"
+# name = "Contact"
+# url = "/contact"
 
-[[main]]
-parent = "Pages"
-name = "404 Page"
-url = "/404"
+# [[main]]
+# parent = "Pages"
+# name = "Authors"
+# url = "/authors"
+
+# [[main]]
+# parent = "Pages"
+# name = "Categories"
+# url = "/categories"
+
+# [[main]]
+# parent = "Pages"
+# name = "404 Page"
+# url = "/404"
 
 
 # footer menu

@@ -1,5 +1,24 @@
 <footer class="bg-light dark:bg-darkmode-light">
   <div class="container">
+    <!-- Newsletter 订阅表单开始 -->
+    {{ if site.Params.newsletter.enable }}
+    <div class="row justify-center border-border dark:border-darkmode-border border-b py-10">
+      <div class="lg:col-6 text-center">
+        <!-- 订阅标题 -->
+        <h2 class="h3 mb-4">{{ site.Params.newsletter.title | markdownify }}</h2>
+        <!-- 订阅描述 -->
+        <p class="mb-8">{{ site.Params.newsletter.description | markdownify }}</p>
+        <!-- 订阅表单，支持 Buttondown 弹出窗口 -->
+        <form action="{{ site.Params.newsletter.action }}" method="post" target="popupwindow" onsubmit="window.open('{{ site.Params.newsletter.action }}', 'popupwindow')" class="flex flex-col sm:flex-row gap-4 justify-center">
+          <input type="email" name="email" class="form-input w-full sm:w-auto min-w-[300px] rounded" placeholder="{{ site.Params.newsletter.placeholder }}" required>
+          <!-- 嵌入标识，Buttondown 需要 -->
+          <input type="hidden" value="1" name="embed">
+          <button type="submit" class="btn btn-primary">{{ site.Params.newsletter.button_label }}</button>
+        </form>
+      </div>
+    </div>
+    {{ end }}
+    <!-- Newsletter 订阅表单结束 -->
     <div class="row items-center py-10">
       <div class="lg:col-3 mb-8 text-center lg:mb-0 lg:text-left">
         <!-- navbar brand/logo -->

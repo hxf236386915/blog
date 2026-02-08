@@ -1,17 +1,54 @@
 <footer class="bg-light dark:bg-darkmode-light">
   <div class="container">
+    <!-- Newsletter 订阅表单开始 -->
     {{ if site.Params.newsletter.enable }}
     <div class="row justify-center border-border dark:border-darkmode-border border-b py-10">
       <div class="lg:col-6 text-center">
+        <!-- 订阅标题 -->
         <h2 class="h3 mb-4">{{ site.Params.newsletter.title | markdownify }}</h2>
+        <!-- 订阅描述 -->
         <p class="mb-8">{{ site.Params.newsletter.description | markdownify }}</p>
-        <form action="{{ site.Params.newsletter.action }}" method="post" class="flex flex-col sm:flex-row gap-4 justify-center">
-          <input type="email" name="email" class="form-input w-full sm:w-auto min-w-[300px] rounded" placeholder="{{ site.Params.newsletter.placeholder }}" required>
-          <button type="submit" class="btn btn-primary">{{ site.Params.newsletter.button_label }}</button>
-        </form>
+        <!-- 订阅表单，支持 Buttondown 弹出窗口 -->
+        <form id="newsletter-footer" action="{{ site.Params.newsletter.action }}" method="post" target="popupwindow" onsubmit="handleNewsletterSubmit(this)" class="flex flex-col sm:flex-row gap-4 justify-center relative">
+        <input type="email" name="email" class="form-input w-full sm:w-auto min-w-[300px] rounded" placeholder="{{ site.Params.newsletter.placeholder }}" required>
+        <input type="hidden" value="1" name="embed">
+        <button type="submit" class="btn btn-primary">{{ site.Params.newsletter.button_label }}</button>
+        <div id="newsletter-footer-success" class="hidden absolute -bottom-8 left-0 right-0 text-green-500 text-sm">
+          订阅请求已发送！请在弹出的窗口中确认订阅。
+        </div>
+        <div id="newsletter-footer-error" class="hidden absolute -bottom-8 left-0 right-0 text-red-500 text-sm">
+          请先在 params.toml 中配置正确的订阅地址 (Action URL)。
+        </div>
+      </form>
+
+      <script>
+        function handleNewsletterSubmit(form) {
+          const action = form.getAttribute('action');
+          if (action === '#' || action === '') {
+            event.preventDefault();
+            document.getElementById(form.id + '-error').classList.remove('hidden');
+            setTimeout(() => {
+              document.getElementById(form.id + '-error').classList.add('hidden');
+            }, 5000);
+            return false;
+          }
+          
+          window.open(action, 'popupwindow', 'scrollbars=yes,width=800,height=600');
+          
+          // 显示成功提示并清空输入框
+          document.getElementById(form.id + '-success').classList.remove('hidden');
+          setTimeout(() => {
+            form.querySelector('input[type="email"]').value = '';
+            document.getElementById(form.id + '-success').classList.add('hidden');
+          }, 5000);
+          
+          return true;
+        }
+      </script>
       </div>
     </div>
     {{ end }}
+    <!-- Newsletter 订阅表单结束 -->
     <div class="row items-center py-10">
       <div class="lg:col-3 mb-8 text-center lg:mb-0 lg:text-left">
         <!-- navbar brand/logo -->

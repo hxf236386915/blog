@@ -1,6 +1,6 @@
 ---
 enable: true
-title: "Ready to build your next project with Hugo?"
+title: "这是底部内容的标题"
 image: "/images/call-to-action.png"
 description: "Experience the future of web development with Hugoplate and Hugo. Build lightning-fast static sites with ease and flexibility."
 button:

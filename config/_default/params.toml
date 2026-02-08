@@ -29,15 +29,15 @@ custom_script = ""
 # copyright
 copyright = "@2026 by houxuefeng"
 
-# newsletter
-# newsletter module: can be integrated with Mailchimp, Buttondown, or custom form
+# newsletter 订阅配置
+# 支持 Mailchimp, Buttondown 或自定义表单
 [newsletter]
-  enable = true
-  title = "订阅我的 Newsletter"
-  description = "获取最新的文章更新和技术分享。"
-  placeholder = "您的邮箱地址"
-  button_label = "订阅"
-  action = "#" # 在此替换为您的 Mailchimp 或 Buttondown 表单 action URL
+  enable = true # 是否启用订阅功能
+  title = "订阅我的 Newsletter" # 订阅区域标题
+  description = "获取最新的文章更新和技术分享。" # 订阅区域描述文字
+  placeholder = "您的邮箱地址" # 输入框提示文字
+  button_label = "订阅" # 按钮文字
+  action = "https://buttondown.email/api/emails/embed-subscribe/您的用户名" # 替换为您的 Buttondown 用户名
 
 # Preloader
 # preloader module: https://github.com/gethugothemes/hugo-modules/tree/master/components/preloader
