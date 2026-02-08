@@ -29,20 +29,15 @@ custom_script = ""
 # copyright
 copyright = "@2026 by houxuefeng"
 
-# color_primary for PWA module
-color_primary = "#121212"
-
-# PWA
-[pwa]
-enable = true
-name = "Hugoplate"
-short_name = "Hugoplate"
-theme_color = "#121212"
-background_color = "#ffffff"
-display = "standalone"
-orientation = "any"
-scope = "/"
-start_url = "/"
+# newsletter
+# newsletter module: can be integrated with Mailchimp, Buttondown, or custom form
+[newsletter]
+  enable = true
+  title = "订阅我的 Newsletter"
+  description = "获取最新的文章更新和技术分享。"
+  placeholder = "您的邮箱地址"
+  button_label = "订阅"
+  action = "#" # 在此替换为您的 Mailchimp 或 Buttondown 表单 action URL
 
 # Preloader
 # preloader module: https://github.com/gethugothemes/hugo-modules/tree/master/components/preloader
@@ -69,10 +64,10 @@ show_categories = true
 
 # announcement
 # announcement module: https://github.com/gethugothemes/hugo-modules/tree/master/components/announcement
-[announcement]
-enable = true
-expire_days = 7
-content = "<span class='text-center block'>♥️ Loving Hugoplate? <a class='underline' href='https://github.com/zeon-studio/hugoplate' target='_blank' rel='noopener'>Please ⭐️ on Github</a></span>"
+# [announcement]
+# enable = true
+# expire_days = 7
+# content = "<span class='text-center block'>♥️ Loving Hugoplate? <a class='underline' href='https://github.com/zeon-studio/hugoplate' target='_blank' rel='noopener'>Please ⭐️ on Github</a></span>"
 
 # seo meta data for OpenGraph / Twitter Card
 # seo module: https://github.com/gethugothemes/hugo-modules/tree/master/seo-tools/basic-seo

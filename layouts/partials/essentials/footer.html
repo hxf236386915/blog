@@ -1,5 +1,17 @@
 <footer class="bg-light dark:bg-darkmode-light">
   <div class="container">
+    {{ if site.Params.newsletter.enable }}
+    <div class="row justify-center border-border dark:border-darkmode-border border-b py-10">
+      <div class="lg:col-6 text-center">
+        <h2 class="h3 mb-4">{{ site.Params.newsletter.title | markdownify }}</h2>
+        <p class="mb-8">{{ site.Params.newsletter.description | markdownify }}</p>
+        <form action="{{ site.Params.newsletter.action }}" method="post" class="flex flex-col sm:flex-row gap-4 justify-center">
+          <input type="email" name="email" class="form-input w-full sm:w-auto min-w-[300px] rounded" placeholder="{{ site.Params.newsletter.placeholder }}" required>
+          <button type="submit" class="btn btn-primary">{{ site.Params.newsletter.button_label }}</button>
+        </form>
+      </div>
+    </div>
+    {{ end }}
     <div class="row items-center py-10">
       <div class="lg:col-3 mb-8 text-center lg:mb-0 lg:text-left">
         <!-- navbar brand/logo -->
