@@ -14,3 +14,13 @@ yarn.lock
 # OS
 .DS_Store
 Thumbs.db
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+venv/
+tools/notion_sync/venv/
+
+# Environment Variables (Secrets)
+.env
