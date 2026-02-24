@@ -2,13 +2,17 @@ import os
 import sys
 import requests
 import yaml
+import hashlib
 from datetime import datetime
 from slugify import slugify
+from urllib.parse import urlparse
 
 # Configuration
 NOTION_TOKEN = os.environ.get("NOTION_TOKEN")
 DATABASE_ID = os.environ.get("NOTION_DATABASE_ID")
 CONTENT_DIR = "content/chinese/blog"
+STATIC_IMG_DIR = "static/images"
+IMG_URL_PREFIX = "/images"
 
 if not NOTION_TOKEN or not DATABASE_ID:
     print("Error: Please set NOTION_TOKEN and NOTION_DATABASE_ID environment variables.")
@@ -49,6 +53,60 @@ def get_page_blocks(block_id):
         print(f"Error getting blocks: {response.text}")
         return []
     return response.json().get("results", [])
+
+def download_image(url):
+    """
+    Downloads an image from the given URL and saves it to the static/images directory.
+    Returns the local path to be used in the markdown.
+    """
+    if not os.path.exists(STATIC_IMG_DIR):
+        os.makedirs(STATIC_IMG_DIR)
+
+    try:
+        # Generate a unique filename based on the URL content
+        # Using MD5 of the URL is simple and effective for deduplication
+        # But for Notion signed URLs (which change), we might want to check if file exists
+        # However, signed URLs change, so the hash will change.
+        # Let's trust the hash for now.
+        response = requests.get(url, stream=True)
+        if response.status_code == 200:
+            # Try to guess extension from content-type or url
+            content_type = response.headers.get('content-type', '')
+            ext = ".jpg" # default
+            if "image/png" in content_type:
+                ext = ".png"
+            elif "image/jpeg" in content_type:
+                ext = ".jpg"
+            elif "image/gif" in content_type:
+                ext = ".gif"
+            elif "image/webp" in content_type:
+                ext = ".webp"
+            else:
+                # Fallback to extension from URL
+                parsed = urlparse(url)
+                path = parsed.path
+                if "." in path:
+                    ext = os.path.splitext(path)[1]
+
+            # Use content hash for filename to avoid duplicates
+            content = response.content
+            file_hash = hashlib.md5(content).hexdigest()
+            filename = f"{file_hash}{ext}"
+            filepath = os.path.join(STATIC_IMG_DIR, filename)
+
+            # Write file if it doesn't exist
+            if not os.path.exists(filepath):
+                with open(filepath, "wb") as f:
+                    f.write(content)
+                print(f"Downloaded image: {filename}")
+            
+            return f"{IMG_URL_PREFIX}/{filename}"
+        else:
+            print(f"Failed to download image: {url} (Status: {response.status_code})")
+            return url
+    except Exception as e:
+        print(f"Error downloading image: {e}")
+        return url
 
 def block_to_markdown(block):
     btype = block["type"]
@@ -99,9 +157,6 @@ def block_to_markdown(block):
             content = f"```{language}\n{text}\n```\n\n"
             
     elif btype == "image":
-        # Note: Notion images have expiry times. For a robust solution, 
-        # you should download images to local assets.
-        # This is a simplified version linking directly.
         if "file" in block["image"]:
             url = block["image"]["file"]["url"]
         elif "external" in block["image"]:
@@ -114,7 +169,9 @@ def block_to_markdown(block):
             caption = "".join([t["plain_text"] for t in block["image"]["caption"]])
             
         if url:
-            content = f"![{caption}]({url})\n\n"
+            # Download image and replace URL with local path
+            local_url = download_image(url)
+            content = f"![{caption}]({local_url})\n\n"
 
     elif btype == "quote":
         rich_text = block["quote"]["rich_text"]
