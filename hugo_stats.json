@@ -195,6 +195,7 @@
       "lg:text-left",
       "lg:text-right",
       "lg:w-auto",
+      "loading-text",
       "logo-disqus",
       "m-1",
       "m-3",
@@ -313,6 +314,7 @@
       "space-y-4",
       "sr-only",
       "sticky",
+      "submit-text",
       "swiper",
       "swiper-button-next",
       "swiper-button-prev",
@@ -419,6 +421,8 @@
       "we-know-youre-dealing-in-stolen-ore",
       "youtube-video",
       "zh",
+      "二级标题",
+      "你好",
       "无序列表",
       "有序列表"
     ]

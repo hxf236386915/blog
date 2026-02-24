@@ -1,0 +1,12 @@
+0 verbose cli /opt/homebrew/Cellar/node@20/20.19.0/bin/node /opt/homebrew/opt/node@20/bin/npm
+1 info using npm@10.8.2
+2 info using node@v20.19.0
+3 silly config load:file:/opt/homebrew/Cellar/node@20/20.19.0/lib/node_modules/npm/npmrc
+4 silly config load:file:/Users/houxuefeng/mac同步/雀鹰/blog/.npmrc
+5 silly config load:file:/opt/homebrew/etc/npmrc
+6 verbose title npm run dev
+7 verbose argv "run" "dev"
+8 verbose logfile logs-max:10 dir:/Users/houxuefeng/mac同步/雀鹰/blog/.npm/_logs/2026-02-12T08_25_16_048Z-
+9 verbose logfile /Users/houxuefeng/mac同步/雀鹰/blog/.npm/_logs/2026-02-12T08_25_16_048Z-debug-0.log
+10 silly logfile done cleaning log files
+11 http fetch GET 200 https://registry.npmjs.org/npm 1094ms

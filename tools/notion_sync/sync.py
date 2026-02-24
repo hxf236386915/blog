@@ -8,7 +8,7 @@ from slugify import slugify
 # Configuration
 NOTION_TOKEN = os.environ.get("NOTION_TOKEN")
 DATABASE_ID = os.environ.get("NOTION_DATABASE_ID")
-CONTENT_DIR = "content/blog"  # Adjust if your content is elsewhere
+CONTENT_DIR = "content/chinese/blog"
 
 if not NOTION_TOKEN or not DATABASE_ID:
     print("Error: Please set NOTION_TOKEN and NOTION_DATABASE_ID environment variables.")
