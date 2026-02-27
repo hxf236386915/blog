@@ -25,8 +25,15 @@
         <a
           class="navbar-brand inline-block"
           href="{{ site.Home.RelPermalink }}">
-          {{/* https://github.com/gethugothemes/hugo-modules/tree/master/images */}}
-          {{ partial "logo" }}
+          {{/* Use specified logo.png and fixed height 32px for footer */}}
+          {{ $logo := resources.Get "images/logo.png" }}
+          {{ if $logo }}
+            <img src="{{ $logo.RelPermalink }}" 
+                 alt="{{ site.Title }}" 
+                 style="height: 32px; width: auto;" />
+          {{ else }}
+            <span class="text-xl font-bold">{{ site.Title }}</span>
+          {{ end }}
         </a>
       </div>
       <div class="lg:col-6 mb-8 text-center lg:mb-0">

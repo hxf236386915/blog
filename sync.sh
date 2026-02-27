@@ -12,7 +12,11 @@ if [ -z "$NOTION_TOKEN" ] || [ -z "$NOTION_DATABASE_ID" ]; then
   exit 1
 fi
 
-echo "🚀 开始同步 Notion 文章..."
+if [ -z "$NOTION_FRAGMENTS_DATABASE_ID" ]; then
+  echo "⚠️ 提示: 未设置 NOTION_FRAGMENTS_DATABASE_ID，将只同步【文章】。"
+fi
+
+echo "🚀 开始同步 Notion 内容（文章 + 碎片）..."
 
 # 检查虚拟环境是否存在，不存在则创建
 if [ ! -d "tools/notion_sync/venv" ]; then
@@ -24,4 +28,4 @@ fi
 # 运行同步脚本
 tools/notion_sync/venv/bin/python tools/notion_sync/sync.py
 
-echo "✅ 同步完成！请检查 content/blog 目录。"
+echo "✅ 同步完成！请检查 content/chinese/blog 与 content/chinese/fragments 目录。"

@@ -5,8 +5,15 @@
     <div class="order-0">
       <!-- navbar brand/logo -->
       <a class="navbar-brand block" href="{{ site.Home.RelPermalink }}">
-        {{/* https://github.com/gethugothemes/hugo-modules/tree/master/images */}}
-        {{ partial "logo" }}
+        {{/* Use specified logo.png from assets and fixed height 32px */}}
+        {{ $logo := resources.Get "images/logo.png" }}
+        {{ if $logo }}
+          <img src="{{ $logo.RelPermalink }}" 
+               alt="{{ site.Title }}" 
+               style="height: 32px; width: auto;" />
+        {{ else }}
+          <span class="text-xl font-bold">{{ site.Title }}</span>
+        {{ end }}
       </a>
     </div>
     <!-- navbar toggler -->

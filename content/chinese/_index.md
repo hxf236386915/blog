@@ -1,12 +1,12 @@
 ---
 # Banner
 banner:
-  title: "这是文章的标题"
-  content: "这是内容描述."
+  title: "文字会变得不重要吗？"
+  content: "在这个AI时代，只要把你的需求告诉AI，它就会立刻给你生成一篇还不错的文章。而我却觉着人们用心写的文章，反而变得更加的弥足珍贵，因为它记录了一个人的思考和情感。"
   image: "/images/banner.png"
   button:
     enable: true
-    label: "这是按钮"
+    label: "看看我的文章"
     link: "https://app.sitepins.com/new/clone?name=Hugoplate&repository=https://github.com/zeon-studio/hugoplate/"
 
 # Features

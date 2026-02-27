@@ -6,17 +6,33 @@ import hashlib
 from datetime import datetime
 from slugify import slugify
 from urllib.parse import urlparse
+from qiniu import Auth, put_data
 
 # Configuration
 NOTION_TOKEN = os.environ.get("NOTION_TOKEN")
-DATABASE_ID = os.environ.get("NOTION_DATABASE_ID")
-CONTENT_DIR = "content/chinese/blog"
+BLOG_DATABASE_ID = os.environ.get("NOTION_DATABASE_ID")
+FRAGMENTS_DATABASE_ID = os.environ.get("NOTION_FRAGMENTS_DATABASE_ID")
+
+BLOG_CONTENT_DIR = "content/chinese/blog"
+FRAGMENTS_CONTENT_DIR = "content/chinese/fragments"
 STATIC_IMG_DIR = "static/images"
 IMG_URL_PREFIX = "/images"
 
-if not NOTION_TOKEN or not DATABASE_ID:
+# Qiniu Configuration
+QINIU_ACCESS_KEY = os.environ.get("QINIU_ACCESS_KEY")
+QINIU_SECRET_KEY = os.environ.get("QINIU_SECRET_KEY")
+QINIU_BUCKET_NAME = os.environ.get("QINIU_BUCKET_NAME")
+QINIU_DOMAIN = os.environ.get("QINIU_DOMAIN")
+
+if not NOTION_TOKEN or not BLOG_DATABASE_ID:
     print("Error: Please set NOTION_TOKEN and NOTION_DATABASE_ID environment variables.")
     sys.exit(1)
+
+# Initialize Qiniu Auth
+q = None
+if QINIU_ACCESS_KEY and QINIU_SECRET_KEY:
+    q = Auth(QINIU_ACCESS_KEY, QINIU_SECRET_KEY)
+    print("Qiniu SDK initialized.")
 
 HEADERS = {
     "Authorization": f"Bearer {NOTION_TOKEN}",
@@ -24,24 +40,16 @@ HEADERS = {
     "Notion-Version": "2022-06-28",
 }
 
-def get_database_pages():
-    url = f"https://api.notion.com/v1/databases/{DATABASE_ID}/query"
-    # Try filtering by '发布状态' first, as user confirmed this field name
-    # Update: Based on API response, field is '发布状态' and type is 'select' (not 'status' type, but 'select' type behaving like status)
-    payload = {
-        "filter": {
-            "property": "发布状态",
-            "select": {
-                "equals": "Published"
-            }
-        }
-    }
+def get_database_pages(database_id, filter_criteria=None):
+    url = f"https://api.notion.com/v1/databases/{database_id}/query"
+    payload = {}
+    if filter_criteria:
+        payload["filter"] = filter_criteria
+
     response = requests.post(url, json=payload, headers=HEADERS)
     
     if response.status_code != 200:
-        print(f"Error querying database with 'select' filter: {response.text}")
-        # Fallback: maybe it is a status type after all? Or user changed it.
-        # But from logs, it is type 'select'.
+        print(f"Error querying database: {response.text}")
         return []
 
     return response.json().get("results", [])
@@ -54,23 +62,15 @@ def get_page_blocks(block_id):
         return []
     return response.json().get("results", [])
 
-def download_image(url):
+def download_image(url, prefix="blog/images"):
     """
-    Downloads an image from the given URL and saves it to the static/images directory.
-    Returns the local path to be used in the markdown.
+    Downloads an image from the given URL and uploads it to Qiniu OSS.
+    If Qiniu is not configured, saves it to the static/images directory.
+    Returns the URL to be used in the markdown.
     """
-    if not os.path.exists(STATIC_IMG_DIR):
-        os.makedirs(STATIC_IMG_DIR)
-
     try:
-        # Generate a unique filename based on the URL content
-        # Using MD5 of the URL is simple and effective for deduplication
-        # But for Notion signed URLs (which change), we might want to check if file exists
-        # However, signed URLs change, so the hash will change.
-        # Let's trust the hash for now.
         response = requests.get(url, stream=True)
         if response.status_code == 200:
-            # Try to guess extension from content-type or url
             content_type = response.headers.get('content-type', '')
             ext = ".jpg" # default
             if "image/png" in content_type:
@@ -82,24 +82,43 @@ def download_image(url):
             elif "image/webp" in content_type:
                 ext = ".webp"
             else:
-                # Fallback to extension from URL
                 parsed = urlparse(url)
                 path = parsed.path
                 if "." in path:
                     ext = os.path.splitext(path)[1]
 
-            # Use content hash for filename to avoid duplicates
             content = response.content
             file_hash = hashlib.md5(content).hexdigest()
             filename = f"{file_hash}{ext}"
-            filepath = os.path.join(STATIC_IMG_DIR, filename)
 
-            # Write file if it doesn't exist
+            # Try uploading to Qiniu if configured
+            if q and QINIU_BUCKET_NAME and QINIU_DOMAIN:
+                try:
+                    # The key to save in Qiniu
+                    key = f"{prefix}/{filename}"
+                    # Check if file exists in Qiniu - skipping for now, put_data will overwrite if exists
+                    token = q.upload_token(QINIU_BUCKET_NAME, key, 3600)
+                    ret, info = put_data(token, key, content)
+                    
+                    if info.status_code == 200:
+                        # Force use HTTP as user requested
+                        qiniu_url = f"http://{QINIU_DOMAIN}/{key}"
+                            
+                        print(f"Uploaded to Qiniu: {qiniu_url}")
+                        return qiniu_url
+                    else:
+                        print(f"Qiniu upload failed, falling back to local: {info}")
+                except Exception as qe:
+                    print(f"Error during Qiniu upload: {qe}")
+
+            # Fallback to local storage
+            if not os.path.exists(STATIC_IMG_DIR):
+                os.makedirs(STATIC_IMG_DIR)
+            filepath = os.path.join(STATIC_IMG_DIR, filename)
             if not os.path.exists(filepath):
                 with open(filepath, "wb") as f:
                     f.write(content)
-                print(f"Downloaded image: {filename}")
-            
+                print(f"Saved local image: {filename}")
             return f"{IMG_URL_PREFIX}/{filename}"
         else:
             print(f"Failed to download image: {url} (Status: {response.status_code})")
@@ -108,7 +127,7 @@ def download_image(url):
         print(f"Error downloading image: {e}")
         return url
 
-def block_to_markdown(block):
+def block_to_markdown(block, image_prefix="blog/images", extract_images_list=None):
     btype = block["type"]
     content = ""
     
@@ -170,8 +189,13 @@ def block_to_markdown(block):
             
         if url:
             # Download image and replace URL with local path
-            local_url = download_image(url)
-            content = f"![{caption}]({local_url})\n\n"
+            local_url = download_image(url, image_prefix)
+            
+            if extract_images_list is not None:
+                extract_images_list.append({"url": local_url, "caption": caption})
+                content = ""
+            else:
+                content = f"![{caption}]({local_url})\n\n"
 
     elif btype == "quote":
         rich_text = block["quote"]["rich_text"]
@@ -183,15 +207,19 @@ def block_to_markdown(block):
     
     return content
 
-def process_page(page):
+def process_page(page, content_dir, image_prefix="blog/images", extract_images=False):
     props = page["properties"]
     
     # Extract Title
+    title = ""
     title_prop = props.get("Name") or props.get("Title") or props.get("名称")
-    if not title_prop or not title_prop["title"]:
-        print("Skipping page without title")
-        return
-    title = "".join([t["plain_text"] for t in title_prop["title"]])
+    if title_prop and title_prop.get("title"):
+        title = "".join([t["plain_text"] for t in title_prop["title"]])
+    
+    if not title:
+        # Fallback for empty title (common in fragments)
+        print("Page has no title, using created_time as title.")
+        title = page["created_time"]
     
     # Extract Date
     date_prop = props.get("Date") or props.get("日期")
@@ -223,7 +251,7 @@ def process_page(page):
         slug = slugify(title)
         
     filename = f"{slug}.md"
-    filepath = os.path.join(CONTENT_DIR, filename)
+    filepath = os.path.join(content_dir, filename)
     
     # Prepare Front Matter
     front_matter = {
@@ -238,8 +266,14 @@ def process_page(page):
     # Convert Page Content
     blocks = get_page_blocks(page["id"])
     markdown_content = ""
+    images_list = [] if extract_images else None
+    
     for block in blocks:
-        markdown_content += block_to_markdown(block)
+        markdown_content += block_to_markdown(block, image_prefix, extract_images_list=images_list)
+        
+    if images_list:
+        front_matter["images"] = [img["url"] for img in images_list]
+        front_matter["gallery"] = images_list
         
     # Write File
     with open(filepath, "w", encoding="utf-8") as f:
@@ -250,18 +284,32 @@ def process_page(page):
         
     print(f"Synced: {filename}")
 
-def main():
-    if not os.path.exists(CONTENT_DIR):
-        os.makedirs(CONTENT_DIR)
-        
-    pages = get_database_pages()
-    print(f"Found {len(pages)} published pages.")
-    
+def sync_database(database_id, content_dir, label, filter_criteria=None, image_prefix="blog/images", extract_images=False):
+    if not database_id:
+        print(f"[{label}] Database ID not set, skipping.")
+        return
+
+    if not os.path.exists(content_dir):
+        os.makedirs(content_dir)
+
+    pages = get_database_pages(database_id, filter_criteria)
+    print(f"[{label}] Found {len(pages)} published pages.")
+
     for page in pages:
         try:
-            process_page(page)
+            process_page(page, content_dir, image_prefix, extract_images)
         except Exception as e:
-            print(f"Error processing page {page['id']}: {e}")
+            print(f"[{label}] Error processing page {page['id']}: {e}")
+
+def main():
+    blog_filter = {
+        "property": "发布状态",
+        "select": {
+            "equals": "Published"
+        }
+    }
+    sync_database(BLOG_DATABASE_ID, BLOG_CONTENT_DIR, "blog", blog_filter, "blog/images", extract_images=False)
+    sync_database(FRAGMENTS_DATABASE_ID, FRAGMENTS_CONTENT_DIR, "fragments", None, "fragments/images", extract_images=True)
 
 if __name__ == "__main__":
     main()

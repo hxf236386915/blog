@@ -1,0 +1,57 @@
+{{ define "main" }}
+  {{ partial "page-header" . }}
+
+  <section class="section">
+    <div class="container">
+      <div class="row justify-center">
+        <div class="lg:col-10">
+          <div class="flex flex-col space-y-10">
+            {{ $paginator:= .Paginate .RegularPages }}
+            {{ range $paginator.Pages }}
+              <div class="bg-light dark:bg-darkmode-light rounded-lg p-8 shadow-sm">
+                <!-- Content -->
+                <div class="content">
+                  {{ .Content }}
+                </div>
+                
+                <!-- Images Gallery -->
+                {{ if .Params.gallery }}
+                  <div class="grid grid-cols-3 gap-4 mt-6">
+                    {{ range .Params.gallery }}
+                      <a href="{{ .url }}" class="glightbox" data-gallery="gallery-{{ $.File.UniqueID }}">
+                        <img src="{{ .url }}" alt="{{ .caption | default "" }}" class="w-full h-48 object-cover rounded-lg hover:opacity-90 transition duration-300" />
+                      </a>
+                    {{ end }}
+                  </div>
+                {{ end }}
+                
+                <!-- Meta (Date) -->
+                <div class="mt-6 text-sm text-text-light dark:text-darkmode-text-light flex items-center justify-between border-t border-border dark:border-darkmode-border pt-4">
+                  <span>{{ .Date | time.Format ":date_medium" }}</span>
+                </div>
+              </div>
+            {{ end }}
+          </div>
+          
+          <div class="mt-14">
+            {{ partial "components/pagination.html" . }}
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- GLightbox -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/glightbox/dist/css/glightbox.min.css" />
+  <script src="https://cdn.jsdelivr.net/gh/mcstudios/glightbox/dist/js/glightbox.min.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const lightbox = GLightbox({
+        selector: '.glightbox',
+        touchNavigation: true,
+        loop: true,
+        autoplayVideos: true
+      });
+    });
+  </script>
+{{ end }}

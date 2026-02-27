@@ -1,6 +1,6 @@
 ---
 # 用户评价部分配置
-enable: true # 是否启用该部分
+enable: false # 是否启用该部分
 title: "这是用户评价的标题" # 部分标题
 description: "这是用户评价的描述." # 部分描述
 
