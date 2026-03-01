@@ -101,8 +101,8 @@ def download_image(url, prefix="blog/images"):
                     ret, info = put_data(token, key, content)
                     
                     if info.status_code == 200:
-                        # Force use HTTP as user requested
-                        qiniu_url = f"http://{QINIU_DOMAIN}/{key}"
+                        # Force use HTTPS as user requested (GitHub Pages requires HTTPS)
+                        qiniu_url = f"https://{QINIU_DOMAIN}/{key}"
                             
                         print(f"Uploaded to Qiniu: {qiniu_url}")
                         return qiniu_url
