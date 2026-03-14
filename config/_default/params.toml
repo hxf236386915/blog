@@ -32,13 +32,13 @@ copyright = "@2026 by houxuefeng"
 # newsletter 订阅配置
 # 支持 Mailchimp, Buttondown 或自定义表单
 [newsletter]
-  enable = true # 是否启用订阅功能
+  enable = false # 是否启用订阅功能
   title = "订阅我的 Newsletter" # 订阅区域标题
   description = "获取最新的文章更新和技术分享。" # 订阅区域描述文字
   placeholder = "您的邮箱地址" # 输入框提示文字
   button_label = "订阅" # 按钮文字
-  action = "https://api.buttondown.com/v1/subscribers" # Buttondown API 接口地址
-  api_token = "b7b5d37d-f047-4358-9bd8-223967a6d1f2" # 您的 API Token
+  action = "https://buttondown.com/api/emails/embed-subscribe/hxf236386915" # Buttondown 订阅表单地址（无需 Token）
+  popup_url = "https://buttondown.com/hxf236386915" # Buttondown 订阅页（用于弹窗打开）
 
 # Preloader
 # preloader module: https://github.com/gethugothemes/hugo-modules/tree/master/components/preloader
