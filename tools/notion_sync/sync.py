@@ -40,27 +40,153 @@ HEADERS = {
     "Notion-Version": "2022-06-28",
 }
 
+NOTION_PAGE_SIZE = 100
+
+def _plain_text_from_rich_text(rich_text):
+    if not rich_text:
+        return ""
+    return "".join([t.get("plain_text", "") for t in rich_text]).strip()
+
+def _render_rich_text(rich_text):
+    if not rich_text:
+        return ""
+    parts = []
+    for t in rich_text:
+        text = t.get("plain_text", "")
+        href = t.get("href")
+        if href and text:
+            parts.append(f"[{text}]({href})")
+        else:
+            parts.append(text)
+    return "".join(parts)
+
+def _extract_single_text_property(props, keys):
+    for key in keys:
+        prop = props.get(key)
+        if not prop:
+            continue
+
+        ptype = prop.get("type")
+        if ptype == "people":
+            people = prop.get("people") or []
+            names = [p.get("name", "").strip() for p in people if p.get("name")]
+            if not names:
+                continue
+            return names[0]
+
+        if ptype == "select":
+            sel = prop.get("select")
+            if sel and sel.get("name"):
+                return str(sel["name"]).strip()
+            continue
+
+        if ptype == "multi_select":
+            items = prop.get("multi_select") or []
+            names = [i.get("name", "").strip() for i in items if i.get("name")]
+            if not names:
+                continue
+            return names[0]
+
+        if ptype == "rich_text":
+            text = _plain_text_from_rich_text(prop.get("rich_text"))
+            if text:
+                return text
+            continue
+
+        if ptype == "title":
+            text = _plain_text_from_rich_text(prop.get("title"))
+            if text:
+                return text
+            continue
+
+        if ptype == "email":
+            email = prop.get("email")
+            if email:
+                return str(email).strip()
+            continue
+
+        if ptype == "url":
+            url = prop.get("url")
+            if url:
+                return str(url).strip()
+            continue
+
+    return ""
+
 def get_database_pages(database_id, filter_criteria=None):
     url = f"https://api.notion.com/v1/databases/{database_id}/query"
-    payload = {}
+    payload = {"page_size": NOTION_PAGE_SIZE}
     if filter_criteria:
         payload["filter"] = filter_criteria
 
-    response = requests.post(url, json=payload, headers=HEADERS)
-    
-    if response.status_code != 200:
-        print(f"Error querying database: {response.text}")
-        return []
+    all_results = []
+    start_cursor = None
 
-    return response.json().get("results", [])
+    while True:
+        if start_cursor:
+            payload["start_cursor"] = start_cursor
+        elif "start_cursor" in payload:
+            del payload["start_cursor"]
+
+        response = requests.post(url, json=payload, headers=HEADERS)
+        if response.status_code != 200:
+            print(f"Error querying database: {response.text}")
+            return []
+
+        data = response.json()
+        all_results.extend(data.get("results", []))
+
+        if not data.get("has_more"):
+            break
+
+        start_cursor = data.get("next_cursor")
+        if not start_cursor:
+            break
+
+    return all_results
+
+def _get_block_children(block_id):
+    url = f"https://api.notion.com/v1/blocks/{block_id}/children"
+    params = {"page_size": NOTION_PAGE_SIZE}
+
+    all_results = []
+    start_cursor = None
+
+    while True:
+        if start_cursor:
+            params["start_cursor"] = start_cursor
+        elif "start_cursor" in params:
+            del params["start_cursor"]
+
+        response = requests.get(url, headers=HEADERS, params=params)
+        if response.status_code != 200:
+            print(f"Error getting blocks: {response.text}")
+            return []
+
+        data = response.json()
+        all_results.extend(data.get("results", []))
+
+        if not data.get("has_more"):
+            break
+
+        start_cursor = data.get("next_cursor")
+        if not start_cursor:
+            break
+
+    return all_results
 
 def get_page_blocks(block_id):
-    url = f"https://api.notion.com/v1/blocks/{block_id}/children"
-    response = requests.get(url, headers=HEADERS)
-    if response.status_code != 200:
-        print(f"Error getting blocks: {response.text}")
-        return []
-    return response.json().get("results", [])
+    blocks = _get_block_children(block_id)
+    for block in blocks:
+        if block.get("has_children"):
+            block["_children"] = get_page_blocks(block["id"])
+    return blocks
+
+def _indent_markdown(markdown, spaces):
+    if not markdown:
+        return ""
+    prefix = " " * spaces
+    return "\n".join([f"{prefix}{line}" if line.strip() else line for line in markdown.splitlines()]) + "\n"
 
 def download_image(url, prefix="blog/images"):
     """
@@ -127,52 +253,56 @@ def download_image(url, prefix="blog/images"):
         print(f"Error downloading image: {e}")
         return url
 
+def blocks_to_markdown(blocks, image_prefix="blog/images", extract_images_list=None):
+    markdown_content = ""
+    for block in blocks:
+        markdown_content += block_to_markdown(block, image_prefix, extract_images_list=extract_images_list)
+    return markdown_content
+
 def block_to_markdown(block, image_prefix="blog/images", extract_images_list=None):
     btype = block["type"]
     content = ""
     
     if btype == "paragraph":
         rich_text = block["paragraph"]["rich_text"]
-        if rich_text:
-            content = "".join([t["plain_text"] for t in rich_text]) + "\n\n"
-        else:
-            content = "\n"
+        text = _render_rich_text(rich_text)
+        content = f"{text}\n\n" if text else "\n"
             
     elif btype == "heading_1":
         rich_text = block["heading_1"]["rich_text"]
         if rich_text:
-            text = "".join([t["plain_text"] for t in rich_text])
+            text = _render_rich_text(rich_text)
             content = f"# {text}\n\n"
             
     elif btype == "heading_2":
         rich_text = block["heading_2"]["rich_text"]
         if rich_text:
-            text = "".join([t["plain_text"] for t in rich_text])
+            text = _render_rich_text(rich_text)
             content = f"## {text}\n\n"
             
     elif btype == "heading_3":
         rich_text = block["heading_3"]["rich_text"]
         if rich_text:
-            text = "".join([t["plain_text"] for t in rich_text])
+            text = _render_rich_text(rich_text)
             content = f"### {text}\n\n"
             
     elif btype == "bulleted_list_item":
         rich_text = block["bulleted_list_item"]["rich_text"]
         if rich_text:
-            text = "".join([t["plain_text"] for t in rich_text])
+            text = _render_rich_text(rich_text)
             content = f"- {text}\n"
             
     elif btype == "numbered_list_item":
         rich_text = block["numbered_list_item"]["rich_text"]
         if rich_text:
-            text = "".join([t["plain_text"] for t in rich_text])
+            text = _render_rich_text(rich_text)
             content = f"1. {text}\n"
             
     elif btype == "code":
         rich_text = block["code"]["rich_text"]
         language = block["code"]["language"]
         if rich_text:
-            text = "".join([t["plain_text"] for t in rich_text])
+            text = _render_rich_text(rich_text)
             content = f"```{language}\n{text}\n```\n\n"
             
     elif btype == "image":
@@ -185,7 +315,7 @@ def block_to_markdown(block, image_prefix="blog/images", extract_images_list=Non
         
         caption = ""
         if block["image"]["caption"]:
-            caption = "".join([t["plain_text"] for t in block["image"]["caption"]])
+            caption = _render_rich_text(block["image"]["caption"])
             
         if url:
             # Download image and replace URL with local path
@@ -200,11 +330,46 @@ def block_to_markdown(block, image_prefix="blog/images", extract_images_list=Non
     elif btype == "quote":
         rich_text = block["quote"]["rich_text"]
         if rich_text:
-            text = "".join([t["plain_text"] for t in rich_text])
+            text = _render_rich_text(rich_text)
             content = f"> {text}\n\n"
 
-    # Add more block types as needed (to_do, toggle, callout, etc.)
+    elif btype == "divider":
+        content = "---\n\n"
+
+    elif btype == "to_do":
+        rich_text = block["to_do"]["rich_text"]
+        checked = bool(block["to_do"].get("checked"))
+        text = _render_rich_text(rich_text)
+        mark = "x" if checked else " "
+        content = f"- [{mark}] {text}\n"
+
+    elif btype == "callout":
+        rich_text = block["callout"]["rich_text"]
+        icon = block["callout"].get("icon") or {}
+        emoji = icon.get("emoji") if icon.get("type") == "emoji" else ""
+        text = _render_rich_text(rich_text)
+        prefix = f"{emoji} " if emoji else ""
+        content = f"> {prefix}{text}\n\n"
+
+    elif btype == "toggle":
+        rich_text = block["toggle"]["rich_text"]
+        summary = _render_rich_text(rich_text)
+        children = block.get("_children") or []
+        children_md = blocks_to_markdown(children, image_prefix, extract_images_list=extract_images_list)
+        content = f"<details><summary>{summary}</summary>\n\n{children_md}\n</details>\n\n"
+
+    elif btype == "bookmark":
+        url = block["bookmark"].get("url")
+        if url:
+            content = f"[{url}]({url})\n\n"
     
+    children = block.get("_children") or []
+    if children and btype in {"bulleted_list_item", "numbered_list_item", "to_do"}:
+        children_md = blocks_to_markdown(children, image_prefix, extract_images_list=extract_images_list)
+        content += _indent_markdown(children_md, 2)
+    elif children and btype not in {"toggle"}:
+        content += blocks_to_markdown(children, image_prefix, extract_images_list=extract_images_list)
+
     return content
 
 def process_page(page, content_dir, image_prefix="blog/images", extract_images=False):
@@ -242,6 +407,8 @@ def process_page(page, content_dir, image_prefix="blog/images", extract_images=F
              categories = [t["name"] for t in cats_prop["multi_select"]]
         elif cats_prop["type"] == "select" and cats_prop["select"]:
              categories = [cats_prop["select"]["name"]]
+
+    author = _extract_single_text_property(props, ["Author", "author", "作者", "作者信息"])
         
     # Generate Slug/Filename
     slug_prop = props.get("Slug") or props.get("URL别名")
@@ -260,16 +427,14 @@ def process_page(page, content_dir, image_prefix="blog/images", extract_images=F
         "draft": False,
         "tags": tags,
         "categories": categories,
-        # Add other standard Hugo front matter fields here
     }
+    if author:
+        front_matter["author"] = author
     
     # Convert Page Content
     blocks = get_page_blocks(page["id"])
-    markdown_content = ""
     images_list = [] if extract_images else None
-    
-    for block in blocks:
-        markdown_content += block_to_markdown(block, image_prefix, extract_images_list=images_list)
+    markdown_content = blocks_to_markdown(blocks, image_prefix, extract_images_list=images_list)
         
     if images_list:
         front_matter["images"] = [img["url"] for img in images_list]

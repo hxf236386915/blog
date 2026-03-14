@@ -25,7 +25,15 @@ contact_form_action = "#" # contact form works with [https://airform.io/] or [ht
 google_tag_manager = "" # example: G-XXXXXXXXXX
 google_adsense = ""     # example: ca-pub-xxxxxxxxxxxxxxxx
 # custom script on header, example: custom_script= "<script>console.log(\"Hello World\")</script>"
-custom_script = ""
+custom_script = """<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?e7d5760c1aea61738dc21bab7ec432c6";
+  var s = document.getElementsByTagName("script")[0];
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>"""
 # copyright
 copyright = "@2026 by houxuefeng"
 
@@ -96,6 +104,21 @@ enable = false
 expire_days = 60
 content = "This site uses cookies. By continuing to use this website, you agree to their use."
 button = "I Accept"
+
+# comments (Giscus)
+[giscus]
+enable = true
+repo = "hxf236386915/blog"
+repo_id = "R_kgDORKo-1A"
+category = "Announcements"
+category_id = "DIC_kwDORKo-1M4C4Ybz"
+mapping = "pathname"
+strict = false
+reactions_enabled = true
+emit_metadata = false
+input_position = "bottom"
+theme = "preferred_color_scheme"
+lang = "zh-CN"
 
 # diagrams
 [mermaid]

@@ -1,5 +1,10 @@
-<div class="toc">
-  <nav id="TableOfContents">
-    {{ .TableOfContents }}
-  </nav>
-</div>
+<aside class="toc-flyout hidden lg:block" data-toc-flyout data-toc-pinned="0">
+  <div class="toc-flyout__panel">
+    <button class="toc-flyout__pin" type="button" data-toc-pin>
+      目录
+    </button>
+    <div class="toc-flyout__content">
+      {{ .TableOfContents }}
+    </div>
+  </div>
+</aside>

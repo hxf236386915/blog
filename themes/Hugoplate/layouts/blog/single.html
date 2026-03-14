@@ -62,16 +62,32 @@
                 </ul>
               </div>
             {{ end }}
-            <div class="lg:col-6 flex items-center lg:justify-end">
-              <h5>{{ T "share" | default "Share" }} :</h5>
-              {{ partial "social-share" (dict "Context" . "Class" "share-icons" "Title" .Title "Whatsapp" false "Telegram" false "Linkedin" false "Pinterest" false "Tumblr" false "Vk" false "Reddit" false) }}
-            </div>
+            {{/* <div class="lg:col-6 flex items-center lg:justify-end"> */}}
+            {{/*   <h5>{{ T "share" | default "Share" }} :</h5> */}}
+            {{/*   {{ partial "social-share" (dict "Context" . "Class" "share-icons" "Title" .Title "Whatsapp" false "Telegram" false "Linkedin" false "Pinterest" false "Tumblr" false "Vk" false "Reddit" false) }} */}}
+            {{/* </div> */}}
           </div>
           <!-- comments -->
-          {{ if site.Config.Services.Disqus.Shortname }}
-            <div class="mt-20">
-              {{ partial "disqus.html" . }}
-            </div>
+          {{ with site.Params.giscus }}
+            {{ if and .enable .repo .repo_id .category .category_id }}
+              <div class="mt-20">
+                <script
+                  src="https://giscus.app/client.js"
+                  data-repo="{{ .repo }}"
+                  data-repo-id="{{ .repo_id }}"
+                  data-category="{{ .category }}"
+                  data-category-id="{{ .category_id }}"
+                  data-mapping="{{ .mapping | default `pathname` }}"
+                  data-strict="{{ cond (.strict | default false) `1` `0` }}"
+                  data-reactions-enabled="{{ cond (.reactions_enabled | default true) `1` `0` }}"
+                  data-emit-metadata="{{ cond (.emit_metadata | default false) `1` `0` }}"
+                  data-input-position="{{ .input_position | default `top` }}"
+                  data-theme="{{ .theme | default `preferred_color_scheme` }}"
+                  data-lang="{{ .lang | default `zh-CN` }}"
+                  crossorigin="anonymous"
+                  async></script>
+              </div>
+            {{ end }}
           {{ end }}
         </article>
       </div>

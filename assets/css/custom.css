@@ -1,1 +1,119 @@
 .navbar-brand img { height: 32px; width: auto; }
+
+.toc-flyout {
+  position: fixed;
+  right: 1rem;
+  top: 6rem;
+  z-index: 40;
+}
+
+.toc-flyout__panel {
+  width: 12rem;
+  max-height: 14rem;
+  overflow: hidden;
+  border-radius: 0.75rem;
+  background: #f7f7f7;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.12);
+  transition: width 180ms ease, max-height 180ms ease;
+}
+
+.toc-flyout__pin {
+  display: block;
+  width: 100%;
+  padding: 0.6rem 0.8rem;
+  text-align: left;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #111827;
+  background: rgba(0, 0, 0, 0.04);
+  border: 0;
+  cursor: pointer;
+}
+
+.toc-flyout__content {
+  padding: 0.6rem 0.8rem 0.8rem;
+}
+
+.toc-flyout:not([data-toc-pinned="1"]):hover .toc-flyout__panel {
+  width: 20rem;
+  max-height: 70vh;
+  overflow: auto;
+}
+
+.toc-flyout[data-toc-pinned="1"] .toc-flyout__panel {
+  width: 20rem;
+  max-height: 70vh;
+  overflow: auto;
+}
+
+.toc-flyout #TableOfContents {
+  padding: 0;
+  background: transparent;
+}
+
+.toc-flyout #TableOfContents ol,
+.toc-flyout #TableOfContents ul {
+  margin: 0;
+  padding-left: 0;
+  list-style: none;
+}
+
+.toc-flyout #TableOfContents ul ul,
+.toc-flyout #TableOfContents ol ol,
+.toc-flyout #TableOfContents ul ol,
+.toc-flyout #TableOfContents ol ul {
+  margin-left: 0.9rem;
+  padding-left: 0.7rem;
+  border-left: 1px solid rgba(0, 0, 0, 0.12);
+}
+
+.dark .toc-flyout #TableOfContents ul ul,
+.dark .toc-flyout #TableOfContents ol ol,
+.dark .toc-flyout #TableOfContents ul ol,
+.dark .toc-flyout #TableOfContents ol ul {
+  border-left-color: rgba(255, 255, 255, 0.18);
+}
+
+.toc-flyout #TableOfContents ol + ol,
+.toc-flyout #TableOfContents ul + ul,
+.toc-flyout #TableOfContents ol + ul,
+.toc-flyout #TableOfContents ul + ol {
+  margin-top: 0.6rem;
+}
+
+.toc-flyout #TableOfContents li {
+  margin: 0.25rem 0;
+  line-height: 1.25rem;
+}
+
+.toc-flyout #TableOfContents a {
+  color: #111827 !important;
+  text-decoration: none;
+  font-size: 0.9rem;
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.toc-flyout #TableOfContents a:hover {
+  text-decoration: underline;
+}
+
+.dark .toc-flyout__panel {
+  background: #111827;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.35);
+}
+
+.dark .toc-flyout__pin {
+  color: #f9fafb;
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.dark .toc-flyout #TableOfContents a {
+  color: #f9fafb !important;
+}
+
+.content :is(h1, h2, h3, h4, h5, h6) {
+  scroll-margin-top: 6.5rem;
+}
