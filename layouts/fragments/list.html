@@ -19,7 +19,7 @@
                   <div class="grid grid-cols-3 gap-4 mt-6">
                     {{ range .Params.gallery }}
                       <a href="{{ .url }}" class="glightbox" data-gallery="gallery-{{ $.File.UniqueID }}">
-                        <img src="{{ .url }}" alt="{{ .caption | default "" }}" class="w-full h-48 object-cover rounded-lg hover:opacity-90 transition duration-300" />
+                        <img src="{{ .url }}" alt="{{ .caption | default "" }}" class="w-full h-48 object-contain bg-light dark:bg-darkmode-light rounded-lg hover:opacity-90 transition duration-300" />
                       </a>
                     {{ end }}
                   </div>

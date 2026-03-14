@@ -31,7 +31,7 @@
 {{/* scripts */}}
 <script
   crossorigin="anonymous"
-  integrity="{{ $scripts.Data.Integrity }}"
+  {{ with $scripts.Data.Integrity }}integrity="{{ . }}"{{ end }}
   src="{{ $scripts.RelPermalink }}"></script>
 
 {{/* scripts lazy */}}
@@ -39,7 +39,7 @@
   defer
   async
   crossorigin="anonymous"
-  integrity="{{ $scriptsLazy.Data.Integrity }}"
+  {{ with $scriptsLazy.Data.Integrity }}integrity="{{ . }}"{{ end }}
   src="{{ $scriptsLazy.RelPermalink }}"></script>
 
 <!-- progressive web app -->

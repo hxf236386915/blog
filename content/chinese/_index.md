@@ -7,45 +7,43 @@ banner:
   button:
     enable: true
     label: "看看我的文章"
-    link: "https://app.sitepins.com/new/clone?name=Hugoplate&repository=https://github.com/zeon-studio/hugoplate/"
+    link: "/blog/"
 
 # Features
 features:
-  - title: "标题111"
+  - title: "AI 最佳实践"
     image: "/images/service-1.png"
-    content: "Hugoplate is a comprehensive starter template that includes everything you need to get started with your Hugo project. What's Included in Hugoplate"
+    content: "AI的迭代速度越来越快，能力越来越超乎预期。我们也在不断的去探索，去尝试。在AI的使用方面，主要基于2个维度在不断的探索，一个是广度，一个是深度。"
     bulletpoints:
-      - "10+ Pre-build pages"
-      - "95+ Google Pagespeed Score"
-      - "Build with Hugo and TailwindCSS for easy and customizable styling"
-      - "Fully responsive on all devices"
-      - "SEO-optimized for better search engine rankings"
-      - "**Open-source and free** for personal and commercial use"
+      - "在深度上，我一直在思考、在尝试，我们日常的工作，有哪些是能够被AI替代的，并且可以做的更好的；哪些是必须需要人去完成的，又有哪些是人和AI协作完成的。"
+      - "在广度上，我一直在探索、在学习，我们本职工作的上下游，有哪些我们也可以通过AI去触及，去更快速、高效、高质的完成。从而探索人与AI协作的边界。"
+      - "基于这两点，在不断变化的AI时代，找到更加适合自己的AI最佳实践，在未来也许能够更好的去实践一人公司，也许未来会出现token消耗的价格与人力的价格间的平衡，也许这一切都只是一个过程。那刚好，就让这最佳实践不断去生长。"
+
     button:
       enable: false
       label: "Get Started Now"
       link: "#"
 
-  - title: "Discover the Key Features Of Hugo"
+  - title: "孵化手札"
     image: "/images/service-2.png"
-    content: "Hugo is an all-in-one web framework for building fast, content-focused websites. It offers a range of exciting features for developers and website creators. Some of the key features are:"
+    content: "记录一段从灵光闪现到无限生长的完整旅程。我们如何捕捉并孕育一个想法，如何从0到1地将其塑造成产品，又如何推动它从市场破壳，走向可持续的演进与生长。"
     bulletpoints:
-      - "Zero JS, by default: No JavaScript runtime overhead to slow you down."
-      - "Customizable: Tailwind, MDX, and 100+ other integrations to choose from."
-      - "UI-agnostic: Supports React, Preact, Svelte, Vue, Solid, Lit and more."
+      - "从灵感到蓝图。在混沌中识别真正的机会，将模糊的直觉转化为清晰的判断，确保我们在做正确的事。"
+      - "从蓝图到实体。像构建一个生命系统那样打造产品，融合设计、技术与匠心，让想法扎实落地。"
+      - "从破壳到无限。为产品注入持续生长的力量，连接市场与用户，推动它跨越周期，不断演进。"
     button:
-      enable: true
+      enable: false
       label: "Get Started Now"
       link: "https://github.com/zeon-studio/hugoplate"
 
-  - title: "The Top Reasons to Choose Hugo for Your Hugo Project"
+  - title: "溯寻见闻录"
     image: "/images/service-3.png"
-    content: "With Hugo, you can build modern and content-focused websites without sacrificing performance or ease of use."
+    content: "世界是碎片，意义需要追溯。我们要记录我们的所见所闻、所学所思，更要回溯信息的源头，探寻事物间的隐藏脉络。"
     bulletpoints:
-      - "Instantly load static sites for better user experience and SEO."
-      - "Intuitive syntax and support for popular frameworks make learning and using Hugo a breeze."
-      - "Use any front-end library or framework, or build custom components, for any project size."
-      - "Built on cutting-edge technology to keep your projects up-to-date with the latest web standards."
+      - "观点的生长。一个观点如何从零星的线索、交错的阅读与偶然的对话中悄然萌芽，并最终凝结成形。"
+      - "系统的联结。将孤立的现象放置回它所处的更大系统之中，去观察它背后的结构、动力与那些不可见的连接。"
+      - "认知的更新。标记自己原有认知被松动、被修正或被彻底重塑的那些关键时刻，记录新知如何替代旧地图"
+
     button:
       enable: false
       label: ""

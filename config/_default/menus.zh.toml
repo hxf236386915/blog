@@ -17,11 +17,6 @@ url = "/blog"
 weight = 3
 
 [[main]]
-name = "分类"
-url = "/categories"
-weight = 4
-
-[[main]]
 name = "关于我"
 url = "/about"
 weight = 5

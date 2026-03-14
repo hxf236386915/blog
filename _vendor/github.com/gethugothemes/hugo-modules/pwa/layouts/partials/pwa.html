@@ -1,4 +1,6 @@
-<!-- service worker -->
-<script>
-  if ('serviceWorker' in navigator){navigator.serviceWorker.register({{`service-worker.js` | relURL}});}
-</script>
+{{ if not hugo.IsServer }}
+  <!-- service worker -->
+  <script>
+    if ('serviceWorker' in navigator){navigator.serviceWorker.register("{{ `service-worker.js` | relURL }}");}
+  </script>
+{{ end }}

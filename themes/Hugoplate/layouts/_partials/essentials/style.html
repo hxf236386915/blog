@@ -68,13 +68,20 @@
 <!-- link main style -->
 <link
   href="{{ $styles.RelPermalink }}"
-  integrity="{{ $styles.Data.Integrity }}"
+  {{ with $styles.Data.Integrity }}integrity="{{ . }}"{{ end }}
   rel="stylesheet" />
 
 <!-- link lazy style -->
-<link
-  rel="stylesheet"
-  href="{{ $stylesLazy.RelPermalink }}"
-  integrity="{{ $stylesLazy.Data.Integrity }}"
-  media="print"
-  onload="this.media='all'; this.onload=null;" />
+{{ if hugo.IsProduction }}
+  <link
+    rel="stylesheet"
+    href="{{ $stylesLazy.RelPermalink }}"
+    integrity="{{ $stylesLazy.Data.Integrity }}"
+    media="print"
+    onload="this.media='all'; this.onload=null;" />
+{{ else }}
+  <link
+    rel="stylesheet"
+    href="{{ $stylesLazy.RelPermalink }}"
+    {{ with $stylesLazy.Data.Integrity }}integrity="{{ . }}"{{ end }} />
+{{ end }}
