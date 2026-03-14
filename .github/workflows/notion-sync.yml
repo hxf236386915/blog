@@ -25,6 +25,7 @@ jobs:
 
       - name: Run sync script
         env:
+          PYTHONUNBUFFERED: "1"
           NOTION_TOKEN: ${{ secrets.NOTION_TOKEN }}
           NOTION_DATABASE_ID: ${{ secrets.NOTION_DATABASE_ID }}
           NOTION_FRAGMENTS_DATABASE_ID: ${{ secrets.NOTION_FRAGMENTS_DATABASE_ID }}

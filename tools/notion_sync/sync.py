@@ -3,7 +3,8 @@ import sys
 import requests
 import yaml
 import hashlib
-from datetime import datetime
+import time
+import random
 from slugify import slugify
 from urllib.parse import urlparse
 from qiniu import Auth, put_data
@@ -41,6 +42,50 @@ HEADERS = {
 }
 
 NOTION_PAGE_SIZE = 100
+NOTION_TIMEOUT_SECONDS = (10, 60)
+IMAGE_TIMEOUT_SECONDS = (10, 180)
+HTTP_RETRY_TIMES = 6
+HTTP_RETRYABLE_STATUS = {408, 429, 500, 502, 503, 504}
+
+SESSION = requests.Session()
+
+def _sleep_seconds_for_retry(attempt):
+    base = min(60, 2 ** (attempt - 1))
+    jitter = random.uniform(0, 0.5)
+    return base + jitter
+
+def _request_with_retry(method, url, *, headers=None, timeout=None, **kwargs):
+    last_exc = None
+    for attempt in range(1, HTTP_RETRY_TIMES + 1):
+        try:
+            response = SESSION.request(
+                method,
+                url,
+                headers=headers or HEADERS,
+                timeout=timeout,
+                **kwargs,
+            )
+        except requests.RequestException as exc:
+            last_exc = exc
+            wait = _sleep_seconds_for_retry(attempt)
+            print(f"[http] {method} {url} failed: {exc}; retry in {wait:.1f}s ({attempt}/{HTTP_RETRY_TIMES})", flush=True)
+            time.sleep(wait)
+            continue
+
+        if response.status_code in HTTP_RETRYABLE_STATUS and attempt < HTTP_RETRY_TIMES:
+            wait = _sleep_seconds_for_retry(attempt)
+            retry_after = response.headers.get("Retry-After")
+            if retry_after and str(retry_after).strip().isdigit():
+                wait = max(wait, float(retry_after))
+            print(f"[http] {method} {url} status={response.status_code}; retry in {wait:.1f}s ({attempt}/{HTTP_RETRY_TIMES})", flush=True)
+            time.sleep(wait)
+            continue
+
+        return response
+
+    if last_exc:
+        raise last_exc
+    raise RuntimeError(f"Request failed after retries: {method} {url}")
 
 def _plain_text_from_rich_text(rich_text):
     if not rich_text:
@@ -121,6 +166,7 @@ def get_database_pages(database_id, filter_criteria=None):
 
     all_results = []
     start_cursor = None
+    page_count = 0
 
     while True:
         if start_cursor:
@@ -128,13 +174,15 @@ def get_database_pages(database_id, filter_criteria=None):
         elif "start_cursor" in payload:
             del payload["start_cursor"]
 
-        response = requests.post(url, json=payload, headers=HEADERS)
+        response = _request_with_retry("POST", url, json=payload, timeout=NOTION_TIMEOUT_SECONDS)
         if response.status_code != 200:
-            print(f"Error querying database: {response.text}")
+            print(f"Error querying database: {response.text}", flush=True)
             return []
 
         data = response.json()
         all_results.extend(data.get("results", []))
+        page_count += 1
+        print(f"[notion] queried database page {page_count}, total_pages={len(all_results)}", flush=True)
 
         if not data.get("has_more"):
             break
@@ -151,6 +199,7 @@ def _get_block_children(block_id):
 
     all_results = []
     start_cursor = None
+    page_count = 0
 
     while True:
         if start_cursor:
@@ -158,13 +207,17 @@ def _get_block_children(block_id):
         elif "start_cursor" in params:
             del params["start_cursor"]
 
-        response = requests.get(url, headers=HEADERS, params=params)
+        response = _request_with_retry("GET", url, params=params, timeout=NOTION_TIMEOUT_SECONDS)
         if response.status_code != 200:
-            print(f"Error getting blocks: {response.text}")
+            print(f"Error getting blocks: {response.text}", flush=True)
             return []
 
         data = response.json()
         all_results.extend(data.get("results", []))
+        page_count += 1
+        if page_count == 1:
+            print(f"[notion] fetching blocks for {block_id}", flush=True)
+        print(f"[notion] fetched block page {page_count}, total_blocks={len(all_results)} for {block_id}", flush=True)
 
         if not data.get("has_more"):
             break
@@ -195,7 +248,7 @@ def download_image(url, prefix="blog/images"):
     Returns the URL to be used in the markdown.
     """
     try:
-        response = requests.get(url, stream=True)
+        response = _request_with_retry("GET", url, stream=True, timeout=IMAGE_TIMEOUT_SECONDS, headers=None)
         if response.status_code == 200:
             content_type = response.headers.get('content-type', '')
             ext = ".jpg" # default
@@ -224,18 +277,18 @@ def download_image(url, prefix="blog/images"):
                     key = f"{prefix}/{filename}"
                     # Check if file exists in Qiniu - skipping for now, put_data will overwrite if exists
                     token = q.upload_token(QINIU_BUCKET_NAME, key, 3600)
-                    ret, info = put_data(token, key, content)
+                    _, info = put_data(token, key, content)
                     
                     if info.status_code == 200:
                         # Force use HTTPS as user requested (GitHub Pages requires HTTPS)
                         qiniu_url = f"https://{QINIU_DOMAIN}/{key}"
                             
-                        print(f"Uploaded to Qiniu: {qiniu_url}")
+                        print(f"Uploaded to Qiniu: {qiniu_url}", flush=True)
                         return qiniu_url
                     else:
-                        print(f"Qiniu upload failed, falling back to local: {info}")
+                        print(f"Qiniu upload failed, falling back to local: {info}", flush=True)
                 except Exception as qe:
-                    print(f"Error during Qiniu upload: {qe}")
+                    print(f"Error during Qiniu upload: {qe}", flush=True)
 
             # Fallback to local storage
             if not os.path.exists(STATIC_IMG_DIR):
@@ -244,13 +297,13 @@ def download_image(url, prefix="blog/images"):
             if not os.path.exists(filepath):
                 with open(filepath, "wb") as f:
                     f.write(content)
-                print(f"Saved local image: {filename}")
+                print(f"Saved local image: {filename}", flush=True)
             return f"{IMG_URL_PREFIX}/{filename}"
         else:
-            print(f"Failed to download image: {url} (Status: {response.status_code})")
+            print(f"Failed to download image: {url} (Status: {response.status_code})", flush=True)
             return url
     except Exception as e:
-        print(f"Error downloading image: {e}")
+        print(f"Error downloading image: {e}", flush=True)
         return url
 
 def blocks_to_markdown(blocks, image_prefix="blog/images", extract_images_list=None):
@@ -383,7 +436,7 @@ def process_page(page, content_dir, image_prefix="blog/images", extract_images=F
     
     if not title:
         # Fallback for empty title (common in fragments)
-        print("Page has no title, using created_time as title.")
+        print("Page has no title, using created_time as title.", flush=True)
         title = page["created_time"]
     
     # Extract Date
@@ -447,24 +500,24 @@ def process_page(page, content_dir, image_prefix="blog/images", extract_images=F
         f.write("---\n\n")
         f.write(markdown_content)
         
-    print(f"Synced: {filename}")
+    print(f"Synced: {filename}", flush=True)
 
 def sync_database(database_id, content_dir, label, filter_criteria=None, image_prefix="blog/images", extract_images=False):
     if not database_id:
-        print(f"[{label}] Database ID not set, skipping.")
+        print(f"[{label}] Database ID not set, skipping.", flush=True)
         return
 
     if not os.path.exists(content_dir):
         os.makedirs(content_dir)
 
     pages = get_database_pages(database_id, filter_criteria)
-    print(f"[{label}] Found {len(pages)} published pages.")
+    print(f"[{label}] Found {len(pages)} published pages.", flush=True)
 
     for page in pages:
         try:
             process_page(page, content_dir, image_prefix, extract_images)
         except Exception as e:
-            print(f"[{label}] Error processing page {page['id']}: {e}")
+            print(f"[{label}] Error processing page {page['id']}: {e}", flush=True)
 
 def main():
     blog_filter = {
