@@ -25,8 +25,12 @@ QINIU_SECRET_KEY = os.environ.get("QINIU_SECRET_KEY")
 QINIU_BUCKET_NAME = os.environ.get("QINIU_BUCKET_NAME")
 QINIU_DOMAIN = os.environ.get("QINIU_DOMAIN")
 
-if not NOTION_TOKEN or not BLOG_DATABASE_ID:
-    print("Error: Please set NOTION_TOKEN and NOTION_DATABASE_ID environment variables.")
+if not NOTION_TOKEN:
+    print("Error: Please set NOTION_TOKEN environment variable.", flush=True)
+    sys.exit(1)
+
+if not BLOG_DATABASE_ID and not FRAGMENTS_DATABASE_ID:
+    print("Error: Please set NOTION_DATABASE_ID and/or NOTION_FRAGMENTS_DATABASE_ID environment variables.", flush=True)
     sys.exit(1)
 
 # Initialize Qiniu Auth
@@ -502,9 +506,12 @@ def process_page(page, content_dir, image_prefix="blog/images", extract_images=F
         
     print(f"Synced: {filename}", flush=True)
 
-def sync_database(database_id, content_dir, label, filter_criteria=None, image_prefix="blog/images", extract_images=False):
+def sync_database(database_id, content_dir, label, filter_criteria=None, image_prefix="blog/images", extract_images=False, database_env_name=None):
     if not database_id:
-        print(f"[{label}] Database ID not set, skipping.", flush=True)
+        if database_env_name:
+            print(f"[{label}] Database ID not set (env {database_env_name} is empty), skipping.", flush=True)
+        else:
+            print(f"[{label}] Database ID not set, skipping.", flush=True)
         return
 
     if not os.path.exists(content_dir):
@@ -526,8 +533,24 @@ def main():
             "equals": "Published"
         }
     }
-    sync_database(BLOG_DATABASE_ID, BLOG_CONTENT_DIR, "blog", blog_filter, "blog/images", extract_images=False)
-    sync_database(FRAGMENTS_DATABASE_ID, FRAGMENTS_CONTENT_DIR, "fragments", None, "fragments/images", extract_images=True)
+    sync_database(
+        BLOG_DATABASE_ID,
+        BLOG_CONTENT_DIR,
+        "blog",
+        blog_filter,
+        "blog/images",
+        extract_images=False,
+        database_env_name="NOTION_DATABASE_ID",
+    )
+    sync_database(
+        FRAGMENTS_DATABASE_ID,
+        FRAGMENTS_CONTENT_DIR,
+        "fragments",
+        None,
+        "fragments/images",
+        extract_images=True,
+        database_env_name="NOTION_FRAGMENTS_DATABASE_ID",
+    )
 
 if __name__ == "__main__":
     main()
