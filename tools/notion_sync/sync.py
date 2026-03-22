@@ -60,12 +60,13 @@ def _sleep_seconds_for_retry(attempt):
 
 def _request_with_retry(method, url, *, headers=None, timeout=None, **kwargs):
     last_exc = None
+    effective_headers = HEADERS if headers is None else headers
     for attempt in range(1, HTTP_RETRY_TIMES + 1):
         try:
             response = SESSION.request(
                 method,
                 url,
-                headers=headers or HEADERS,
+                headers=effective_headers,
                 timeout=timeout,
                 **kwargs,
             )
@@ -252,7 +253,7 @@ def download_image(url, prefix="blog/images"):
     Returns the URL to be used in the markdown.
     """
     try:
-        response = _request_with_retry("GET", url, stream=True, timeout=IMAGE_TIMEOUT_SECONDS, headers=None)
+        response = _request_with_retry("GET", url, stream=True, timeout=IMAGE_TIMEOUT_SECONDS, headers={})
         if response.status_code == 200:
             content_type = response.headers.get('content-type', '')
             ext = ".jpg" # default
