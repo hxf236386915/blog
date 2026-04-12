@@ -35,7 +35,7 @@ var _hmt = _hmt || [];
 })();
 </script>"""
 # copyright
-copyright = "@2026 by houxuefeng"
+copyright = "@2026 by houxuefeng | [湘ICP备17003881号-2](https://beian.miit.gov.cn/?spm=5176.beian-pc.J_9220772140.J_4NWEMkQ5nDwOgLi8EJmHs.61#/Integrated/index)"
 
 # newsletter 订阅配置
 # 支持 Mailchimp, Buttondown 或自定义表单
