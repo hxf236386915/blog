@@ -238,7 +238,7 @@ title: 关于信息架构的一些知识
 
 叙词表就是当你搜索某些内容的时候，可能内容中没有你搜索的关键词，但是却可以搜索的到，是因为在内容的主题或描述中有包含你搜索的词。叙词表也包含了如下的几种类型，而决策的依据是你准备如何使用叙词表，它将对你的设计产生重大影响。
 
-![](https://cdn.houxuefeng.com/blog/images/295a6981d84eea5ffde54d491fd78a0b.png)
+![](http://houxuefeng.houxuefeng.com/%E5%8F%99%E8%AF%8D%E8%A1%A8.png)
 
 ## 7.5 语义关系
 
