@@ -108,7 +108,7 @@ AI Harness 的价值就是把这些不确定性“收敛”到工程可控的边
 
 一个常见的 AI Harness 可以分成 6 层（从上到下）：
 
-![AI Harness 典型分层架构图](/images/7c4b6ecc99077dc1d1e88ae404989563.png)
+![AI Harness 典型分层架构图](https://cdn.houxuefeng.com/blog/images/7c4b6ecc99077dc1d1e88ae404989563.png)
 
 ### 1）体验层（Experience Layer）
 
