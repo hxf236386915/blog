@@ -19,7 +19,7 @@ title: 常用的UML建模
 
 UML主要包括图表中的十一种，那在本次的介绍中，只讲解类图、构件图、部署图、活动图、状态机图、顺序图、用例图。
 
-![](https://cdn.houxuefeng.com/blog/images/bba43b0ec8575864a20546293b7150d2.png)
+![](http://houxuefeng.houxuefeng.com/uml%E7%9A%84%E7%A7%8D%E7%B1%BB.png)
 
 通常对业务概念等静态结构进行系统化的梳理和提炼，我们叫它结构建模。而于对业务流程等动态内容进行系统化的梳理和提炼，我们叫它行为建模。而需求分析的核心目的是解决软件有没有用的问题。软件设计是解决软件用多大的成本做出来的问题。所以需求分析首要任务是保证软件的价值。
 
@@ -44,54 +44,54 @@ UML主要包括图表中的十一种，那在本次的介绍中，只讲解类�
 - 直线关系
 直线关系其实就是我们常说的关联关系，如下图。A关联B
 
-![](https://cdn.houxuefeng.com/blog/images/44adf64c4b6a969cc09443d7f322b97e.png)
+![](http://houxuefeng.houxuefeng.com/a%E5%85%B3%E8%81%94b.png)
 
 那如果在直线两端加上数字1，那就是1对1的关系，如下图：
 
-![](https://cdn.houxuefeng.com/blog/images/e7d4cb326b1ced24871aa37efb0ea090.png)
+![](http://houxuefeng.houxuefeng.com/1%E5%AF%B91%E7%9A%84%E5%85%B3%E7%B3%BB.png)
 
 同样，如果将B旁边的1改成*，那就是1对多的关系，如下图：
 
-![](https://cdn.houxuefeng.com/blog/images/6392e355011842eacd51f747a566b168.png)
+![](http://houxuefeng.houxuefeng.com/1%E5%AF%B9%E5%A4%9A%E7%9A%84%E5%85%B3%E7%B3%BB.png)
 
 那如果将*改成0..3，那就是0到3的意思。如果是1..4那就是1到4的意思。下入就是1对0..3的意思
 
-![](https://cdn.houxuefeng.com/blog/images/9b6efd942417fc67a8b6b70b263978f2.png)
+![](http://houxuefeng.houxuefeng.com/1%E5%AF%B90%E5%88%B03%E7%9A%84%E5%85%B3%E7%B3%BB.png)
 
 如果把数字换成了上司和下属，那么他们就是角色关系了，就代表a是b的上级，b是a的下属。如下图：
 
-![](https://cdn.houxuefeng.com/blog/images/384c9151b54b3aab13a6342957f6a95f.png)
+![](http://houxuefeng.houxuefeng.com/%E8%A7%92%E8%89%B2%E5%85%B3%E7%B3%BB.png)
 
 如果把数字换成箭头，那就变成了导航关系，即由A可找到B，如下图：
 
-![](https://cdn.houxuefeng.com/blog/images/f2c63e3c658d1c4b7c1aed78b374cf5a.png)
+![](http://houxuefeng.houxuefeng.com/%E7%94%B1A%E6%89%BE%E5%88%B0B.png)
 
 - 包含关系
 包含关系有两种表示方法，一种是空心菱形，一种是实心菱形。空心菱形可以表示为弱包含的关系，实心菱形可以表示为强包含的关系。弱包含关系即部门没有了，员工可以继续存在。强包含关系是部门没有了，员工也就不存在了。以下图中表示的为，一个部门可以包含多个员工。
 
-![](https://cdn.houxuefeng.com/blog/images/889651335126f0b9573bbff129267aad.png)
+![](http://houxuefeng.houxuefeng.com/%E5%8C%85%E5%90%AB%E5%85%B3%E7%B3%BB1.png)
 
 - 继承关系
 继承关系是谁继承了谁的属性。例如香蕉，苹果，葡萄他们继承了水果的属性，同时又拥有自己的属性。我们用一个三角来表示，如下图：
 
-![](https://cdn.houxuefeng.com/blog/images/85fe5613abb19c27621866011c6c3ffd.png)
+![](http://houxuefeng.houxuefeng.com/%E7%BB%A7%E6%89%BF%E5%85%B3%E7%B3%BB.png)
 
 - 依赖关系
 所谓的依赖关系，依赖程度是相对而言的，不一定是A没有B就不能生存了。在实际的业务逻辑当中，对于某个事情，A需要B来协助完成，也是一种依赖关系。依赖关系使用虚线箭头表示。
 
-![](https://cdn.houxuefeng.com/blog/images/4bce5447a8e4dabb20802b39b427a6ed.png)
+![](http://houxuefeng.houxuefeng.com/A%E4%BE%9D%E8%B5%96B.png)
 
 ## 2.3 类图的进阶
 
 - 递归关系
 我们常用的电脑系统中，如果用类图表示出文件夹与文件的关系，那么该如何表达呢？是文件夹包含文件吗？那文件夹和文件夹的关系呢？使用递归关系，我们就可以更好的表达出来。递归关系分为自包含和自关联，和字面的解释一样，就是自己包含自己，自己关联自己。下图分别是自包含和自关联。
 
-![](https://cdn.houxuefeng.com/blog/images/1b99ff954184121499dab8186fbf8dd5.png)
+![](http://houxuefeng.houxuefeng.com/%E9%80%92%E5%BD%92%E5%85%B3%E7%B3%BB.png)
 
 - 三角关系
 当某些属性值并不是由该类本身就可以确定的时候，我们可以使用三角关系，例如员工的薪资，职位等，并不是由公司可以确定的，而是由劳动合同来确定的，那么我们的表达方式如下：
 
-![](https://cdn.houxuefeng.com/blog/images/41fd595c04197341f6b2f808ee66a2ad.png)
+![](http://houxuefeng.houxuefeng.com/%E4%B8%89%E8%A7%92%E5%85%B3%E7%B3%BB.png)
 
 # 三、活动图
 
@@ -102,29 +102,29 @@ UML主要包括图表中的十一种，那在本次的介绍中，只讲解类�
 - 基础流程图
 流程中一般只有一个开始，会有一个或多个结束。箭头表示流程的走向。一个圆角矩形表示一个活动，活动可以理解为流程中的一个步骤，需要用主动宾的形式来表达。例如员工填写工时，项目经理审批工时。菱形代表判断，会有两个或两个以上的分支。判断一般有三种表达方式：在判断菱形旁写下判断的句子；直接通过监护来表示这个判断；在菱形判断之前加一个活动来表明判断动作。分支流程汇合时，也会使用菱形，然后会合并成一条路线。如下图：
 
-![](https://cdn.houxuefeng.com/blog/images/9602a069ce4e569c845b68138e8c9160.png)
+![](http://houxuefeng.houxuefeng.com/%E5%9F%BA%E7%A1%80%E6%B5%81%E7%A8%8B%E5%9B%BE.png)
 
 - 泳道图
 上面的流程图当中，如果流程简单，那么就可以很好的表达，如果流程很长，涉及到的角色很多，且很复杂时，看到就会非常乱，不止画的人觉着乱，看的人也会感觉很乱。那么，这个时候我们就可以用泳道图。泳道图一般是会按照角色进行分区，那么在画和浏览时都非常清晰。如下图：
 
-![](https://cdn.houxuefeng.com/blog/images/00857e6d96c9ae8d1650ef623599ea4e.png)
+![](http://houxuefeng.houxuefeng.com/%E6%B3%B3%E9%81%93%E5%9B%BE.png)
 
 ## 3.2活动图的进阶
 
 - 并行的活动
 当遇到需要并行的活动或分支时，我们可以使用粗短棒。短粗棒会有两个同时出现。第一个是有一个箭头指入，多条箭头指出，这个叫做分叉。第二个是多条箭头指入，一条箭头指出，这个叫汇合。如下图：
 
-![](https://cdn.houxuefeng.com/blog/images/fcafada286e61e1aaa9613ea48fd7c7f.png)
+![](http://houxuefeng.houxuefeng.com/%E5%B9%B6%E8%A1%8C%E6%B4%BB%E5%8A%A8%E5%9B%BE.png)
 
 - 对象流
 当我们用矩形框来表示某个节点，并将矩形框的文字标注下划线，那它就代表对象。每个活动都有可能有一个或多个输入或输出。与输入输出直接相连的箭头叫对象流，而活动和活动之间相连的叫控制流。如图：
 
-![](https://cdn.houxuefeng.com/blog/images/4cb1d06639f9ce4f3e16965399892fa0.png)
+![](http://houxuefeng.houxuefeng.com/%E5%AF%B9%E8%B1%A1%E6%B5%81.png)
 
 - 连接件
 有的时候活动图很大，一张纸画不下，我们可以使用另一张纸继续画，这个时候，我们可以使用连接件。（其实现在的画图软件大多都不会出现这种情况），如下图，左边的图是箭头指向A，则是活动图到这里转向另一张图。右边的图是A指出一个箭头，表示从A开始继续这个活动图：
 
-![](https://cdn.houxuefeng.com/blog/images/50e83337766fc4bb3bef28379c81b7c5.png)
+![](http://houxuefeng.houxuefeng.com/%E8%BF%9E%E6%8E%A5%E4%BB%B6.png)
 
 ## 3.3 关于活动图的其他问题
 
@@ -140,7 +140,7 @@ UML主要包括图表中的十一种，那在本次的介绍中，只讲解类�
 
 状态机图的开始状态和结束状态与活动图的一致。活动机图用一个圆角矩形来代表一个状态。与活动图不同，活动图是用圆角矩形代表一个活动。而且状态机图一般使用名词或形容词来表示某种状态。如下图：
 
-![](https://cdn.houxuefeng.com/blog/images/7e5a476bf113bb723523033517d37d7e.png)
+![](http://houxuefeng.houxuefeng.com/%E7%8A%B6%E6%80%81%E6%9C%BA%E5%9B%BE.png)
 
 # 4.2 其他问题
 
@@ -156,13 +156,13 @@ UML主要包括图表中的十一种，那在本次的介绍中，只讲解类�
 
 角色可以用一个小人的图标来表示，下面写明角色。也可以用一个矩形来表示，但是需要在矩形里面说明角色。生命线是角色下面的那条虚线。激活框也叫会话，是生命线中细长的矩形。消息用箭头表示，并在上面说明做了什么事情。箭头可以从A指向B，也可以指向自己。返回值用虚线箭头表示，并在上面说明返回的内容。一般是反馈某个东西给相应的对象。如下图：
 
-![](https://cdn.houxuefeng.com/blog/images/ac878a8b3d56d6455b320c914b203c43.png)
+![](http://houxuefeng.houxuefeng.com/%E7%82%B9%E8%8F%9C%E9%A1%BA%E5%BA%8F%E5%9B%BE.png)
 
 ## 5.2 顺序图的进阶
 
 循环分支属于业务流程中比较常见的特殊结构。loop，也叫循环，是满足循环条件的前提下，不断地重复做某些事情。alt，条件分支，是根据不同的条件选择不同的分支。opt，可选分支，是满足一定条件则执行该分支，否则就跳过。如下图：
 
-![](https://cdn.houxuefeng.com/blog/images/0089c6ec3facfbf949d6e16348fcf928.png)
+![](http://houxuefeng.houxuefeng.com/%E8%BF%9B%E9%98%B6%E9%A1%BA%E5%BA%8F%E5%9B%BE.png)
 
 上图的流程中，loop，中括号内是循环条件的内容，表示如果满足循环条件，则重复执行本框的内容。alt，如果满足条件1则执行上半部分，如果满足条件2则执行下半部分。opt，如果满足条件，则执行框中的内容，否则跳过。
 
@@ -183,7 +183,7 @@ UML主要包括图表中的十一种，那在本次的介绍中，只讲解类�
 
 小人（actor，执行者），执行者可能是人也可能是系统。如果是人的话，可称之为角色。如果是系统的话，可以将另外一个系统画成执行者就可以了。圈圈（用例，use case）圈圈里面的文字是动词加名词，这个就代表了系统能做什么事情。大框框（系统边界，system boundary）这个框只框住了用例，没有框住执行者，这个就叫系统边界。线条（关联，association）线条指用例和角色之间的线条，一般有三种，无箭头的，指向用例的箭头，指向执行者的箭头。同时，一般情况下也会有两种解释，一种是数据流向，还有一种是谁启动谁。如下图：
 
-![](https://cdn.houxuefeng.com/blog/images/aaa58298927ee3d2431da48415d1b211.png)
+![](http://houxuefeng.houxuefeng.com/%E7%94%A8%E4%BE%8B%E5%9B%BE%E5%9F%BA%E6%9C%AC%E8%AF%AD%E6%B3%95.png)
 
 ## 6.2 进阶语法
 
@@ -192,17 +192,17 @@ UML主要包括图表中的十一种，那在本次的介绍中，只讲解类�
 - include（包含）
 包含一般有两种用法，一种是以树的方式组织各种用例，用包含来组织好父子用例，子用例可以再次包含自己的子用例，这样层次分明。还有一种是某些用例的一部分可以抽离出来成为子用例，该子用例同时也被其他用例包含。如下图：
 
-![](https://cdn.houxuefeng.com/blog/images/ba458a257ad01cbaa3983e8a0a1fc187.png)
+![](http://houxuefeng.houxuefeng.com/%E7%94%A8%E4%BE%8B%E5%9B%BE%E5%8C%85%E5%90%AB.png)
 
 - extend(扩展)
 扩展的意思就是在某用例的基础上，还能做什么事情。例如用户在查看报表的时候，还可以导出报表，打印报表。如下图：
 
-![](https://cdn.houxuefeng.com/blog/images/e83b1090f1a80925f84834acceb859ad.png)
+![](http://houxuefeng.houxuefeng.com/%E7%94%A8%E4%BE%8B%E5%9B%BE%E6%89%A9%E5%B1%95.png)
 
 - 继承
 继承与类图中的继承性质是一样的，但是一般在画用例图的时候很少用，都会用其他的方式替代，因为不太好理解，而且还会降低沟通效率。如下图：
 
-![](https://cdn.houxuefeng.com/blog/images/f952500f75630fa58884866938820fd9.png)
+![](http://houxuefeng.houxuefeng.com/%E7%94%A8%E4%BE%8B%E5%9B%BE%E7%BB%A7%E6%89%BF.png)
 
 ## 6.3 用例图的其他问题
 
@@ -216,23 +216,23 @@ UML主要包括图表中的十一种，那在本次的介绍中，只讲解类�
 
 在实际环境中的电脑、服务器或硬件设备，在部署图中用节点（Node）来表示，就是图中一个个立体矩形。每个节点都有一个名字，如图中的财务的pc等。门店的pc中有标记，标记（Tags）用来详细说明节点的配置情况，如Number=50-70，说明有50到70台门店的pc。节点与节点直接有物理联系，则直接拉条直线，在直线上写上连接的方式。如下图所示。
 
-![](https://cdn.houxuefeng.com/blog/images/7efcb1071fce884235029c02a6d14df0.png)
+![](http://houxuefeng.houxuefeng.com/%E9%83%A8%E7%BD%B2%E5%9B%BE.png)
 
 ## 7.2 构件图
 
 构件图也叫组件图，构件指的是物理上独立的一个东西，它可以单独维护、升级、替换。下图展示了构件和构件的接口。
 
-![](https://cdn.houxuefeng.com/blog/images/377dd8013721061b6201cb584f51dbff.png)
+![](http://houxuefeng.houxuefeng.com/%E6%9E%84%E4%BB%B6%E5%9B%BE%E7%9A%84%E5%9F%BA%E7%A1%80.png)
 
 下图中的A和B表示依赖关系，表示A依赖于B，A需要调用B提供的一些服务。而C和D则是接口对接，D提供的服务是C所需要的，也可以画成C依赖D。如图
 
-![](https://cdn.houxuefeng.com/blog/images/214ded3b2e879d0d57ded8265c41e2ff.png)
+![](http://houxuefeng.houxuefeng.com/%E6%9E%84%E4%BB%B6%E5%9B%BE%E7%9A%84%E5%85%B3%E7%B3%BB.png)
 
 ## 7.3部署图和构件图结合使用
 
 通常部署图和构件图需要综合使用，才能表达清楚在架构设计上的要求。如下图
 
-![](https://cdn.houxuefeng.com/blog/images/83162a798230dbee16b7c8f9e67d00aa.png)
+![](http://houxuefeng.houxuefeng.com/%E9%83%A8%E7%BD%B2%E5%9B%BE%E5%92%8C%E6%9E%84%E4%BB%B6%E5%9B%BE%E7%BB%84%E5%90%88.png)
 
 ## 7.4关于部署图和构件图的实践建议
 
@@ -251,23 +251,23 @@ UML主要包括图表中的十一种，那在本次的介绍中，只讲解类�
 - 业务概念图
 这个考勤系统主要涉及到考勤，请假，外出。考勤和请假很好理解，外出是指外出工作，性质仍然是工作。这三类事情全都涉及到流程。流程的问题咱们后面在分析。通常我们管理一个事情，除了管理流程，还要对一条或多条记录进行管理。打卡不是会留下打卡记录吗？请假不是会有请假申请吗？外出不是会有外出申请吗？管理这些记录，就是管理这些事情了。如下图，列出了关键的业务概念，业务概念的重要属性，业务概念之间的关系，相关业务信息通过注解来补充。每个人所在的公司情况不一样，理解的角度不一样，业务概念图自然就会不一样。
 
-![](https://cdn.houxuefeng.com/blog/images/4b0e31a723c9d7096ba32427799c5b9d.png)
+![](http://houxuefeng.houxuefeng.com/%E4%B8%9A%E5%8A%A1%E6%A6%82%E5%BF%B5%E5%9B%BE.png)
 
 - 外出申请审批流程分析
 这里只对外出申请做举例，分别画出它的活动图和状态机图。当然，也可以用顺序图来表达，但是此处用活动图和状态机图更合适，所有省略了顺序图。
 
-![](https://cdn.houxuefeng.com/blog/images/87c26ea511b7e9816355725fb6f20ce1.png)
+![](http://houxuefeng.houxuefeng.com/%E5%A4%96%E5%87%BA%E7%94%B3%E8%AF%B7%E5%AE%A1%E6%89%B9%E6%B5%81%E7%A8%8B.png)
 
 活动图
 
-![](https://cdn.houxuefeng.com/blog/images/1a27c6ffab71ffa02094063db4fff6c9.png)
+![](http://houxuefeng.houxuefeng.com/%E5%A4%96%E5%87%BA%E7%94%B3%E8%AF%B7%E5%AE%A1%E6%89%B9%E7%8A%B6%E6%80%81%E6%9C%BA%E5%9B%BE.png)
 
 状态机图
 
 - 普通员工的用例分析
 这里只对普通员工做举例，进行了用例分析。这里考虑到用户需要拥有管理自己外出的权限，管理自己请假，包含可休年假的权限。同时为了方便安排工作，所以增加了可以查看所有员工请假的权限，以及查看自己打卡记录的权限。如下图
 
-![](https://cdn.houxuefeng.com/blog/images/c8684d129499aec5db1f08ac755e02f0.png)
+![](http://houxuefeng.houxuefeng.com/%E6%99%AE%E9%80%9A%E5%91%98%E5%B7%A5%E7%94%A8%E4%BE%8B%E5%88%86%E6%9E%90.png)
 
 - 其他
 关于部署图和构件图，一般情况下是由架构师来完成。所以在这里就不进行举例了。
