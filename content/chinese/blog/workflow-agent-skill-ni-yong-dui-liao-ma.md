@@ -10,7 +10,7 @@ tags:
 title: Workflow、Agent、Skill：你用对了吗？
 ---
 
-![](https://cdn.houxuefeng.com/blog/images/fb5f1235c87c2ffea5ace7cadb89e232.png)
+![](/images/fb5f1235c87c2ffea5ace7cadb89e232.png)
 
 做 AI 产品、搭平台、或者只是想把某个“按钮一键生成内容”的能力跑起来时，很多团队都会很快遇到三个词：Workflow、Agent、Skill。  
 

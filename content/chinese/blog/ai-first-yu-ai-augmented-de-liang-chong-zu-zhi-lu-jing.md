@@ -20,7 +20,7 @@ title: AI-first 与 AI-augmented 的两种组织路径
 
 ## 1. AI-Augmented：在既定链路上加速
 
-![](https://cdn.houxuefeng.com/blog/images/64f5c61c742c133f1e733af818d07dc0.png)
+![](/images/64f5c61c742c133f1e733af818d07dc0.png)
 
 这是目前大多数团队所处的状态。其核心特征是：在维持现有岗位分工和协作流程基本不变的前提下，让 AI 进入每个环节提升单点效率。
 
