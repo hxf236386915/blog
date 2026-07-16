@@ -17,8 +17,8 @@ git add → commit → push 分支 → 创建 PR → 👈 你审查后手动合�
 4. 根据 diff 内容自动生成中文 commit message，**向用户确认**
 5. `git checkout -b sync/YYYYMMDD-HHMMSS` — 创建功能分支
 6. `git commit` — 提交
-7. `git push` — 推送到 Gitea
-8. 通过 Gitea API 创建 Pull Request
+7. `git push -u gitea HEAD` — 推送当前新分支到 Gitea，并设置 upstream
+8. 通过 Gitea API 创建 Pull Request（优先用 `curl`，避免 Python 默认客户端被 Cloudflare 1010 拦截）
 9. 用浏览器打开 PR 页面，让用户审查后手动合并
 
 ## PR 描述模板
@@ -57,13 +57,14 @@ git add → commit → push 分支 → 创建 PR → 👈 你审查后手动合�
 
 ## Gitea API 认证
 
-- 用户名: `houxuefeng`
-- 密码: `hou123456`
+- 不要把账号密码写进仓库文件
+- 推荐使用 `GITEA_TOKEN`
+- 也可临时使用环境变量 `GITEA_USER` / `GITEA_PASSWORD`
 - API 地址: `https://git.agent4ai.xyz/api/v1`
 
 ## PR 创建 API
 
-```
+```http
 POST /repos/houxuefeng/{repo}/pulls
 {
   "title": "<commit message>",
@@ -73,8 +74,27 @@ POST /repos/houxuefeng/{repo}/pulls
 }
 ```
 
+示例：
+
+```bash
+auth_args=()
+if [ -n "$GITEA_TOKEN" ]; then
+  auth_args=(-H "Authorization: token ${GITEA_TOKEN}")
+else
+  auth_args=(-u "${GITEA_USER}:${GITEA_PASSWORD}")
+fi
+
+curl -fsS "${auth_args[@]}" \
+  -H "Content-Type: application/json" \
+  -H "Accept: application/json" \
+  -X POST "https://git.agent4ai.xyz/api/v1/repos/houxuefeng/${repo}/pulls" \
+  -d '{"title":"<commit message>","head":"<分支名>","base":"master","body":"<PR 描述>"}'
+```
+
 ## 注意
 
 - 每次执行前用 `git rev-parse --show-toplevel` 确认仓库名和当前分支
 - **先在分支上 commit，再 push 分支**，不要在 master 上 commit
+- 新分支必须用 `git push -u gitea HEAD` 或 `git push gitea HEAD:refs/heads/<分支名>`，不要只运行裸 `git push`
+- 创建 PR 前确认源分支和 `master` 有差异；如果 head/base 是同一个提交，Gitea 会出现无差异 PR
 - 仓库不存在于 Gitea 时，提醒用户先去网页创建
